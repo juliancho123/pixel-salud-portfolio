@@ -10,7 +10,7 @@ const PanelMedico = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Protección de ruta
+
   useEffect(() => {
     if (!user || user.rol !== 'medico') {
         toast.error("Acceso exclusivo para médicos.");
@@ -20,8 +20,8 @@ const PanelMedico = () => {
 
   if (!user) return <div className="flex h-screen items-center justify-center">Cargando...</div>;
 
-  // Lógica para saber si estamos en el inicio (Menu de Cards)
-  // Agregamos chequeo para ruta con o sin barra final
+
+
   const esInicio = location.pathname === '/panelMedico' || location.pathname === '/panelMedico/';
 
   return (

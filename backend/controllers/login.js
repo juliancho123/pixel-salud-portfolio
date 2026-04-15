@@ -127,7 +127,7 @@ const login = async (req, res) => {
     
     const token = jwt.sign(payload, process.env.SECRET_KEY);
 
-    // Incluir dni solo si es cliente
+
     const extra = {};
     if (tipo === "cliente" && user.dni) {
       extra.dni = user.dni;

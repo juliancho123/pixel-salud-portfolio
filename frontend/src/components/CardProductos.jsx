@@ -26,21 +26,21 @@ const CardProductos = ({ product }) => {
 
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  // Eliminado: const [isAdded, setIsAdded] = useState(false);
+
 
   const itemEnCarrito = carrito.find(
     (item) => item.idProducto === product.idProducto
   );
   const cantidadEnCarrito = itemEnCarrito?.cantidad || 0;
   
-  // Lógica de precios y oferta
+
   const isOffert = !!product.enOferta;
   const regularPrice = product.precioRegular; 
   const discountPercentage = product.porcentajeDescuento ?? 25; 
   const priceToDisplay = product.precioFinal || product.precio; 
   const precioSinImpuestos = priceToDisplay / 1.21;
 
-  // Manejo de agregar al carrito con feedback visual y chequeo de autenticación
+
   const handleLoadingAgregar = async (e) => {
     e.stopPropagation();
      
@@ -51,14 +51,14 @@ const CardProductos = ({ product }) => {
     
     setIsLoading(true);
     
-    // Simulación de carga (mantener si es por UX)
+
     await new Promise(resolve => setTimeout(resolve, 800));
     
     agregarCarrito(product);
     
     setIsLoading(false);
-    // Eliminada la lógica de isAdded, el botón pasará a ser el control de cantidad
-    // tan pronto como sincronizarCarrito() actualice el estado global.
+
+
   };
 
   const handleDisminuir = (e) => {

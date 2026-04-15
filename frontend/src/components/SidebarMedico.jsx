@@ -13,7 +13,7 @@ const SidebarMedico = ({ user }) => {
     navigate('/login');
   };
 
-  // --- FIX: Validación estricta de ruta ---
+
   const isActive = (path) => {
     const segmentos = location.pathname.split('/');
     return segmentos.includes(path);

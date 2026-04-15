@@ -1,4 +1,4 @@
-// Marcar receta como usada (usada=true)
+
 const marcarRecetaUsada = (req, res) => {
     const { idReceta } = req.params;
     const consulta = `UPDATE Recetas SET usada = true WHERE idReceta = ?`;
@@ -12,7 +12,7 @@ const marcarRecetaUsada = (req, res) => {
 };
 const { conection } = require("../config/database")
 
-// 1. Obtener SOLO las recetas del médico logueado
+
 const getMisRecetas = (req, res) => {
     const { idMedico } = req.params; // Lo recibiremos desde el frontend (sacado del token)
 
@@ -36,19 +36,19 @@ const getMisRecetas = (req, res) => {
     });
 }
 
-// 2. Crear Receta (Igual, pero asegurate que los datos lleguen bien)
-// En controllers/recetas.js
+
+
 
 const crearReceta = (req, res) => {
-    // Ahora esperamos 'productos' que es un array: [{idProducto, cantidad}, ...]
+
     const { dniCliente, idMedico, productos } = req.body;
 
     if (!productos || productos.length === 0) {
         return res.status(400).json({ error: "No hay productos en la receta" });
     }
 
-    // Preparamos los valores para insertar MULTIPLES filas de una
-    // Cada fila es una receta independiente
+
+
     const valores = productos.map(prod => [
         dniCliente, 
         idMedico, 
@@ -65,7 +65,7 @@ const crearReceta = (req, res) => {
     conection.query(consulta, [valores], (err, results) => {
         if(err){
             console.error("Error:", err);
-            // Error de clave foránea (paciente no existe)
+
             if (err.code === 'ER_NO_REFERENCED_ROW_2') {
                  return res.status(400).json({ error: "El DNI del paciente no es válido." });
             }
@@ -78,7 +78,7 @@ const crearReceta = (req, res) => {
     })
 }
 
-// 3. Dar de baja (Corregido el mensaje de error)
+
 const darBajaReceta = (req,res) => {
     const {id} = req.params
 
@@ -93,10 +93,10 @@ const darBajaReceta = (req,res) => {
     })
 }
 
-// (Los otros controladores como recetaUsada podés dejarlos, aunque 'recetaUsada' 
-// generalmente lo usa el Farmacéutico cuando vende, no el Médico).
 
-// Obtener recetas activas de un cliente
+
+
+
 const getRecetasClienteActivas = (req, res) => {
     const { dniCliente } = req.params;
     console.log("[BACKEND] Buscando recetas activas para dniCliente:", dniCliente);
@@ -122,5 +122,5 @@ module.exports = {
     darBajaReceta,
     getRecetasClienteActivas,
     marcarRecetaUsada,
-    // getRecetas // Este dejalo solo para el Admin si querés
+
 }

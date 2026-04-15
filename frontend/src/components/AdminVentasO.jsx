@@ -6,7 +6,7 @@ import Swal from 'sweetalert2';
 import { Search, Eye, Globe, Edit, ShoppingBag, XCircle, Trash2, UserCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
-// --- REDUCER (Igual que en Ventas Empleados) ---
+
 const ventaReducer = (state, action) => {
     switch (action.type) {
         case 'SET_FIELD': return { ...state, [action.field]: action.value };
@@ -36,34 +36,34 @@ const AdminVentasO = () => {
 
     const [ventaForm, dispatch] = useReducer(ventaReducer, initialState);
     
-    // Datos
+
     const [ventas, setVentas] = useState([]);
     const [productosDisponibles, setProductosDisponibles] = useState([]);
     
-    // Filtros y UI
+
     const [filtro, setFiltro] = useState("");
     const [filtroEstado, setFiltroEstado] = useState("Todos"); 
     const [cargando, setCargando] = useState(true);
     
-    // Edición
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [clienteEditando, setClienteEditando] = useState(""); // Para mostrar nombre en el modal
 
-    // Paginación
+
     const [paginaActual, setPaginaActual] = useState(1);
     const itemsPorPagina = 6; 
 
-    // Estados posibles
+
     const estadosPosibles = ["Pendiente", "Retirado", "Cancelado"];
 
-    // Estados para el Buscador del Modal (Igual a VentasEmpleados)
+
     const [terminoBusqueda, setTerminoBusqueda] = useState('');
     const [resultadosBusqueda, setResultadosBusqueda] = useState([]); 
     const [productoSeleccionado, setProductoSeleccionado] = useState(null);
     const [cantidad, setCantidad] = useState(1);
 
-    // --- CARGA DE DATOS ---
+
     const obtenerDatos = async () => {
         try {
             setCargando(true);
@@ -72,7 +72,7 @@ const AdminVentasO = () => {
                 apiClient.get("/productos")
             ]);
 
-            // Deduplicación
+
             const rawVentas = resVentas.data.results || resVentas.data || [];
             const ventasUnicas = [];
             const map = new Map();
@@ -84,7 +84,7 @@ const AdminVentasO = () => {
             }
 
             setVentas(ventasUnicas);
-            // Filtramos productos activos para el buscador
+
             const prods = resProd.data.results || resProd.data || [];
             setProductosDisponibles(prods.filter(p => p.activo));
 
@@ -98,7 +98,7 @@ const AdminVentasO = () => {
 
     useEffect(() => { obtenerDatos(); }, []);
 
-    // Cálculo Total Automático
+
     useEffect(() => {
         const nuevoTotal = ventaForm.productos.reduce((acc, prod) => {
             return acc + ((Number(prod.cantidad)||0) * (Number(prod.precioUnitario)||0));
@@ -108,13 +108,13 @@ const AdminVentasO = () => {
         }
     }, [ventaForm.productos]);
 
-    // --- LÓGICA DEL BUSCADOR EN EL MODAL (Igual a Empleados) ---
+
     useEffect(() => {
         if (terminoBusqueda.length < 3) {
             setResultadosBusqueda([]); return;
         }
         const timer = setTimeout(() => {
-            // Filtramos localmente los productos disponibles para no hacer tantas peticiones
+
             const resultados = productosDisponibles.filter(p => 
                 p.nombreProducto.toLowerCase().includes(terminoBusqueda.toLowerCase())
             );
@@ -150,7 +150,7 @@ const AdminVentasO = () => {
         toast.success("Producto agregado");
     };
 
-    // --- LÓGICA EDICIÓN ---
+
     const handleEditarVenta = async (venta) => {
         Swal.fire({ title: 'Cargando...', didOpen: () => Swal.showLoading() });
         try {
@@ -203,7 +203,7 @@ const AdminVentasO = () => {
         }
     };
 
-    // --- CAMBIO ESTADO ---
+
     const handleEstadoChange = async (idVentaO, nuevoEstado) => {
         try {
             const estadoLower = nuevoEstado.toLowerCase(); 
@@ -216,7 +216,7 @@ const AdminVentasO = () => {
         }
     };
 
-    // --- VER TICKET (DETALLE) ---
+
     const handleVerDetalle = async (venta) => {
         Swal.fire({ title: 'Cargando...', didOpen: () => Swal.showLoading() });
         try {
@@ -273,11 +273,11 @@ const AdminVentasO = () => {
         } catch (e) { Swal.fire("Error", "No se pudo cargar detalle", "error"); }
     };
 
-    // --- UTILS ---
+
     const formatearMoneda = (val) => new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(Number(val) || 0);
     const formatearFecha = (f) => !f ? "-" : new Date(f).toLocaleDateString("es-ES");
 
-    // --- FILTROS Y PAGINACIÓN ---
+
     const ventasFiltradas = ventas.filter((v) => {
         const txt = filtro.toLowerCase();
         const coincide = (v.nombreCliente?.toLowerCase() || "").includes(txt) || v.idVentaO?.toString().includes(txt) || (v.dni?.toString() || "").includes(txt);
@@ -292,7 +292,7 @@ const AdminVentasO = () => {
     const cambiarPagina = (n) => setPaginaActual(n);
     const getPaginationNumbers = () => { const r=[]; for(let i=1;i<=totalPaginas;i++)r.push(i); return r; };
 
-    // --- RENDER MODAL "PANEL DE EDICIÓN" (Estilo AdminVentasE) ---
+
     const renderModal = () => (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm overflow-hidden">
             <div className="bg-white rounded-xl shadow-2xl w-full max-w-6xl h-[90vh] flex flex-col animate-fadeIn overflow-hidden">
@@ -436,11 +436,11 @@ const AdminVentasO = () => {
                                         itemsActuales.map((venta) => {
                                             const st = (venta.estado||"").toLowerCase();
                                             const estadoVisual = st.charAt(0).toUpperCase() + st.slice(1);
-                                            // Lógica para color del select
+
                                             let colorSelect = "bg-yellow-100 text-yellow-800";
                                             if(st === "retirado") colorSelect="bg-green-100 text-green-800";
                                             if(st === "cancelado") colorSelect="bg-red-100 text-red-800";
-                                            // Valor exacto para el value del select
+
                                             const valSelect = estadosPosibles.find(e => e.toLowerCase() === st) || "Pendiente";
 
                                             return (

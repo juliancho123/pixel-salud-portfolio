@@ -1,7 +1,7 @@
 const util = require("util");
 const { conection } = require("../config/database");
 
-// Función auxiliar para consultas async/await (Más estable y compatible)
+
 const query = (sql, params) => {
     return new Promise((resolve, reject) => {
         conection.query(sql, params, (err, result) => {
@@ -58,7 +58,7 @@ const registrarVentaOnline = async (req, res) => {
       return res.status(400).json({ error: "Faltan datos obligatorios" });
     }
 
-    // 1. Verificar stock
+
     for (const prod of productos) {
       const results = await query("SELECT stock FROM Productos WHERE idProducto = ?", [prod.idProducto]);
       if (!results.length || results[0].stock < prod.cantidad) {
@@ -66,7 +66,7 @@ const registrarVentaOnline = async (req, res) => {
       }
     }
 
-    // 2. Dirección
+
     let idDireccion = null;
     if (tipoEntrega === "Envio" && direccionEnvio) {
       const sqlDireccion = `INSERT INTO DireccionesEnvio (idCliente, nombreDestinatario, telefono, direccion, ciudad, provincia, codigoPostal, referencias) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
@@ -74,14 +74,14 @@ const registrarVentaOnline = async (req, res) => {
       idDireccion = resultDir.insertId;
     }
 
-    // 3. Insertar Venta
+
     const totalPago = productos.reduce((acc, p) => acc + (p.precioUnitario * p.cantidad), 0);
     const sqlVenta = `INSERT INTO VentasOnlines (totalPago, metodoPago, idCliente, tipoEntrega, estado, idDireccion) VALUES (?, ?, ?, ?, ?, ?)`;
     const resultVenta = await query(sqlVenta, [totalPago, metodoPago, idCliente, tipoEntrega, "Pendiente", idDireccion]);
     
     const idVentaO = resultVenta.insertId;
 
-    // 4. Detalles y Stock
+
     for (const prod of productos) {
       await query(`INSERT INTO DetalleVentaOnline (idVentaO, idProducto, cantidad, precioUnitario) VALUES (?, ?, ?, ?)`, [idVentaO, prod.idProducto, prod.cantidad, prod.precioUnitario]);
       await query(`UPDATE Productos SET stock = stock - ? WHERE idProducto = ?`, [prod.cantidad, prod.idProducto]);
@@ -108,9 +108,9 @@ const actualizarEstadoVenta = async (req, res) => {
   }
 };
 
-// ==========================================
-// NUEVAS FUNCIONES PARA EDITAR (SIN TRANSACTION)
-// ==========================================
+
+
+
 
 const obtenerDetalleVentaOnline = async (req, res) => {
     const { idVentaO } = req.params;
@@ -137,13 +137,13 @@ const actualizarVentaOnline = async (req, res) => {
     }
 
     try {
-        // 1️⃣ Obtener detalles viejos para devolver stock
+
         const detallesViejos = await query(
             'SELECT idProducto, cantidad FROM DetalleVentaOnline WHERE idVentaO = ?',
             [idVentaO]
         );
 
-        // 2️⃣ Devolver stock anterior
+
         for (const det of detallesViejos) {
             await query(
                 'UPDATE Productos SET stock = stock + ? WHERE idProducto = ?',
@@ -151,7 +151,7 @@ const actualizarVentaOnline = async (req, res) => {
             );
         }
 
-        // 3️⃣ Borrar detalles viejos
+
         await query(
             'DELETE FROM DetalleVentaOnline WHERE idVentaO = ?',
             [idVentaO]
@@ -159,7 +159,7 @@ const actualizarVentaOnline = async (req, res) => {
 
         let totalCalculado = 0;
 
-        // 4️⃣ Insertar nuevos productos (precio y stock desde BD)
+
         for (const prod of productos) {
             const idProd = Number(prod.idProducto);
             const cant = Number(prod.cantidad);
@@ -168,7 +168,7 @@ const actualizarVentaOnline = async (req, res) => {
                 return res.status(400).json({ error: "Producto o cantidad inválida" });
             }
 
-            // Obtener precio y stock real
+
             const prodDB = await query(
                 'SELECT precio, stock FROM Productos WHERE idProducto = ?',
                 [idProd]
@@ -186,7 +186,7 @@ const actualizarVentaOnline = async (req, res) => {
                 });
             }
 
-            // Insertar detalle
+
             await query(
                 `INSERT INTO DetalleVentaOnline 
                  (idVentaO, idProducto, cantidad, precioUnitario)
@@ -194,7 +194,7 @@ const actualizarVentaOnline = async (req, res) => {
                 [idVentaO, idProd, cant, precio]
             );
 
-            // Descontar stock
+
             await query(
                 'UPDATE Productos SET stock = stock - ? WHERE idProducto = ?',
                 [cant, idProd]
@@ -203,7 +203,7 @@ const actualizarVentaOnline = async (req, res) => {
             totalCalculado += precio * cant;
         }
 
-        // 5️⃣ Actualizar cabecera de la venta
+
         await query(
             'UPDATE VentasOnlines SET totalPago = ?, metodoPago = ? WHERE idVentaO = ?',
             [totalCalculado, metodoPago, idVentaO]

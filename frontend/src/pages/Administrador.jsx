@@ -13,7 +13,7 @@ const Administrador = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 3. LLAMAR AL STORE AL MONTAR EL COMPONENTE
+
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);

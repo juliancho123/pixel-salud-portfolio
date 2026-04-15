@@ -10,11 +10,11 @@ const AdminEmpleados = () => {
   const [empleados, setEmpleados] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // Filtros
+
   const [busqueda, setBusqueda] = useState("");
   const [filtroEstado, setFiltroEstado] = useState("todos");
 
-  // --- ESTADOS PARA PAGINACIÓN ---
+
   const [paginaActual, setPaginaActual] = useState(1);
   const itemsPorPagina = 4;
 
@@ -85,7 +85,7 @@ const AdminEmpleados = () => {
   };
 
   const handleCrearEmpleado = async () => {
-    // Truco: Quitamos el foco para evitar autocompletado del navegador
+
     if (document.activeElement) {
       document.activeElement.blur();
     }

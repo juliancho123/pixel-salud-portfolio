@@ -12,7 +12,7 @@ const RestablecerContrasena = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Obtener el token de la URL
+
   const token = new URLSearchParams(location.search).get("token");
 
   const primaryColor = "bg-green-600";
@@ -30,8 +30,8 @@ const RestablecerContrasena = () => {
     }
     setIsSubmitting(true);
     try {
-      // Lógica para restablecer la contraseña en el backend
-      // Reemplaza esta URL con la ruta de tu API
+
+
       await axios.post(`http://localhost:5000/clientes/restablecer-password/${token}`, {
     nuevaPassword: password, // Asegurate que la variable se llame igual que en el controller
   });

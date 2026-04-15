@@ -1,26 +1,26 @@
 import { useNavigate } from "react-router-dom";
 import { useCarritoStore } from "../store/useCarritoStore";
-// Asegúrate de importar useAuthStore si quieres poner la lógica de login/modal aquí
-// Pero la lógica de autenticación ya está delegada a useCarritoStore.
+
+
 import { Minus, Plus, Trash2 } from "lucide-react";
 import promoImg from "../assets/medio-de-pago.png";
 
-// Función robusta para limpiar y parsear precios con formato regional (ej: 50.268,75)
+
 const cleanAndParsePrice = (price) => {
-  // Si ya es un número o nulo/indefinido, devuelve el valor o 0
+
   if (typeof price === 'number') return price;
   if (typeof price !== 'string') return 0;
 
-  // 1. Deja solo números, comas y puntos.
+
   let cleaned = price.replace(/[^0-9,.]/g, ''); 
   
-  // 2. Si contiene coma (asumimos formato AR: 1.000,00), reemplaza puntos por nada y coma por punto decimal.
+
   if (cleaned.includes(',')) {
     cleaned = cleaned.replace(/\./g, '').replace(',', '.');
   }
 
   const parsed = parseFloat(cleaned);
-  // Devuelve 0 si el resultado no es un número válido
+
   return isNaN(parsed) ? 0 : parsed;
 };
 
@@ -47,21 +47,21 @@ const ProductInfo = ({ product, precioOriginal }) => {
   const cantidadEnCarrito = itemEnCarrito?.cantidad || 0;
   const isInCart = cantidadEnCarrito > 0;
 
-  // 1. LIMPIEZA: Aseguramos que los precios sean números válidos
-  // Usamos el precio final de la BD
+
+
   const currentPrice = cleanAndParsePrice(product.precio);
   
-  // Usamos el precio original. Si es null/undefined del store, será 0.
+
   const originalPrice = precioOriginal ? cleanAndParsePrice(precioOriginal) : 0; 
   
 
   const handleAddToCart = async () => {
-    // La lógica de login/modal se gestiona dentro de useCarritoStore.js
+
     await agregarCarrito(product);
   };
 
   const handleBuyNow = async () => {
-    // Asegura que el producto esté en el carrito antes de navegar
+
     if (cantidadEnCarrito === 0) {
       await agregarCarrito(product);
     }
@@ -86,7 +86,7 @@ const ProductInfo = ({ product, precioOriginal }) => {
     await eliminarDelCarrito(product.idProducto);
   };
 
-  // 2. CÁLCULO SEGURO: Usamos los precios limpios (currentPrice y originalPrice)
+
   const discountPercentage =
     originalPrice > 0 && originalPrice > currentPrice
       ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100)

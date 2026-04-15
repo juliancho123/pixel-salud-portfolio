@@ -1,12 +1,12 @@
 import { Route, Routes } from "react-router-dom";
 
-// --- COMPONENTES GLOBALES ---
+
 import Layout from "./components/Layout";
 import ScrollToTop from "./components/ScrollToTop";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Error404 from "./pages/Error404";
 
-// --- VISTAS PÚBLICAS / CLIENTE ---
+
 import Inicio from "./pages/Inicio";
 import Productos from "./pages/Productos";
 import Producto from "./pages/Producto";
@@ -20,14 +20,14 @@ import RestablecerContrasena from "./pages/RestablecerContrasena"; // <--- 1. NU
 import SobreNosotros from "./pages/SobreNosotros";
 import Contacto from "./pages/Contacto";
 
-// --- PERFIL CLIENTE ---
+
 import DashboardCliente from "../src/components/DashboardCliente";
 import Perfil from "./pages/Perfil";
 import PerfilFavoritos from "./pages/PerfilFavoritos";
 import MisCompras from "./pages/MisCompras";
 import PerfilDirecciones from "./pages/PerfilDirecciones";
 
-// --- ADMINISTRADOR ---
+
 import Administrador from "./pages/Administrador";
 import AdminMenu from "./components/AdminMenu";
 import MenuProductos from "./components/MenuProductos";
@@ -45,9 +45,9 @@ import MenuVentas from "./components/MenuVentas";
 import AdminVentasE from "./components/AdminVentasE";
 import AdminReportes from "./components/AdminReportes";
 
-// (Nota: AdminVentasO lo tenías importado pero no usado en rutas, lo omití para limpiar)
 
-// --- PANEL EMPLEADO ---
+
+
 import PanelEmpleados from "./pages/PanelEmpleados";
 import VistaInicialCards from "./components/VistiaInicialCardsEmpleado";
 import EmpleadoRealizarVenta from "./components/EmpleadoRealizarVenta";
@@ -55,7 +55,7 @@ import EmpleadoListaVentas from "./components/EmpleadoListaVentas";
 import EmpleadoEditarVenta from "./components/EmpleadoEditarVenta";
 import EmpleadoProductos from "./components/EmpleadosProductos";
 
-// --- PANEL MÉDICO ---
+
 import PanelMedicos from "./pages/PanelMedico";
 import VistaMenuMedico from "./components/VistaMenuMedico";
 import MedicoNuevaReceta from "./components/MedicoNuevaReceta";

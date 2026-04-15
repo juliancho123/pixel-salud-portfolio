@@ -9,7 +9,7 @@ const crearMensaje = (req, res) => {
     if (typeof mensaje !== 'string' || mensaje.trim().length < 10 || mensaje.trim().length > 1000) {
         return res.status(400).json({ error: "El mensaje debe tener entre 10 y 1000 caracteres." });
     }
-    // Si no se envía fechaEnvio, se usará el default de la base de datos
+
     const insertQuery = fechaEnvio
         ? `INSERT INTO MensajesClientes (idCliente, nombre, email, asunto, mensaje, fechaEnvio, estado) VALUES (?, ?, ?, ?, ?, ?, 'nuevo')`
         : `INSERT INTO MensajesClientes (idCliente, nombre, email, asunto, mensaje, estado) VALUES (?, ?, ?, ?, ?, 'nuevo')`;
@@ -21,7 +21,7 @@ const crearMensaje = (req, res) => {
             console.error("Error al guardar el mensaje:", err);
             return res.status(500).json({ error: "Error interno al guardar el mensaje." });
         }
-        // Enviar email de confirmación (no bloquear respuesta si falla)
+
         enviarConfirmacionCliente(email, nombre, asunto || 'Sin Asunto')
           .catch(e => console.error('Error enviando email de confirmación:', e));
         res.status(201).json({ message: "Mensaje recibido correctamente.", newId: result.insertId });

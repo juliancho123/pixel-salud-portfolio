@@ -11,12 +11,12 @@ const CheckoutSuccess = () => {
     const { token } = useAuthStore(); // 👈 OBTENER TOKEN
     const [countdown, setCountdown] = useState(3);
 
-    // ✅ URL ABSOLUTA Y FORZADA AL ENTORNO LOCAL
+
     const LOCAL_SUCCESS_URL = 'http://localhost:5173/perfil/mis-compras';
 
-    // ---------------------------------------------------------------------
-    // FUNCIÓN PARA LIMPIAR EL CARRITO EN LA BASE DE DATOS (VIA BACKEND/NGROK)
-    // ---------------------------------------------------------------------
+
+
+
     const clearCartInDB = useCallback(async () => {
         if (!token) {
             console.warn("❌ Token no disponible. No se puede limpiar el carrito en DB. Asumiendo que el webhook lo hizo.");
@@ -24,7 +24,7 @@ const CheckoutSuccess = () => {
         }
 
         try {
-            // Usar la URL de tu backend (ngrok) para la llamada DELETE
+
             const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
             const urlApiCompleta = `${backendUrl}/mercadopago/clearUserCart`; 
 
@@ -41,7 +41,7 @@ const CheckoutSuccess = () => {
             } else {
                 const errorData = await response.json();
                 console.error('❌ Error al limpiar carrito en DB:', errorData.message);
-                // toast.error("Advertencia: La base de datos no se limpió correctamente.");
+
             }
         } catch (error) {
             console.error('❌ Error de conexión al limpiar carrito:', error);
@@ -52,16 +52,16 @@ const CheckoutSuccess = () => {
     useEffect(() => {
         const status = searchParams.get('status');
         
-        // 1. Limpiar el estado local (para la página actual de Vercel)
+
         vaciarCarritoLocal();
 
-        // 2. Limpiar el carrito de la DB si el pago fue aprobado
+
         if (status === 'approved' && token) {
-             // Llamar a la API para limpiar la tabla Carrito de MySQL
+
              clearCartInDB();
         }
 
-        // 3. Iniciar el contador de redirección
+
         let currentCount = 3;
         const timer = setInterval(() => {
             currentCount -= 1;
@@ -70,8 +70,8 @@ const CheckoutSuccess = () => {
             if (currentCount <= 0) {
                 clearInterval(timer);
                 
-                // 🚀 SOLUCIÓN: FORZAR REDIRECCIÓN EXTERNA (A LOCALHOST)
-                // window.location.replace rompe el contexto de Vercel
+
+
                 window.location.replace(LOCAL_SUCCESS_URL); 
             }
         }, 1000);
@@ -109,7 +109,7 @@ const CheckoutSuccess = () => {
 
                 {/* Botón manual - AHORA REDIRIGE A LOCALHOST */}
                 <button
-                    // 🚀 SOLUCIÓN: Botón también usa window.location.replace
+
                     onClick={() => window.location.replace(LOCAL_SUCCESS_URL)} 
                     className="mt-6 w-full bg-primary-600 text-white py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
                 >

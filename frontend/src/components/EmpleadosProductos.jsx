@@ -16,7 +16,7 @@ const EmpleadoProductos = () => {
   const [ofertas, setOfertas] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // --- LÓGICA DE CARGA DE DATOS ---
+
   const cargarInventario = async () => {
     setLoading(true);
     try {
@@ -43,7 +43,7 @@ const EmpleadoProductos = () => {
     }
   };
 
-  // --- ACCIONES (Mantengo tus funciones originales, resumidas para no repetir lógica innecesaria) ---
+
   const handleCrearProducto = async () => {
     const { value: formValues } = await Swal.fire({
       title: '<h2 class="text-2xl font-bold text-gray-800">✨ Nuevo Producto</h2>',
@@ -325,15 +325,15 @@ const EmpleadoProductos = () => {
   };
 
 
-  // =================================================================
-  // --- COMPONENTE INTERNO: TABLA CON BUSCADOR Y PAGINACIÓN ---
-  // =================================================================
+
+
+
   const TablaPaginada = ({ datos, tipo }) => {
     const [busqueda, setBusqueda] = useState('');
     const [paginaActual, setPaginaActual] = useState(1);
     const itemsPorPagina = 10;
 
-    // 1. Filtrado
+
     const datosFiltrados = datos.filter((item) => {
         const termino = busqueda.toLowerCase();
         if (tipo === 'producto') {
@@ -352,7 +352,7 @@ const EmpleadoProductos = () => {
         }
     });
 
-    // 2. Paginación
+
     const totalPaginas = Math.ceil(datosFiltrados.length / itemsPorPagina);
     const indiceUltimoItem = paginaActual * itemsPorPagina;
     const indicePrimerItem = indiceUltimoItem - itemsPorPagina;
@@ -483,9 +483,9 @@ const EmpleadoProductos = () => {
   };
 
 
-  // =================================================================
-  // --- RENDERIZADO PRINCIPAL ---
-  // =================================================================
+
+
+
 
   const VistaInventario = () => (
     <div className="w-full animate-fadeIn">
@@ -529,7 +529,7 @@ const EmpleadoProductos = () => {
     </div>
   );
 
-  // --- MENÚ PRINCIPAL ---
+
   if (subVista === 'menu') {
     return (
         <div className="p-6 max-w-7xl mx-auto w-full min-h-screen flex flex-col items-center mt-10">

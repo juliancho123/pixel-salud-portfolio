@@ -22,7 +22,7 @@ const Perfil = () => {
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
-  // Cargar datos reales del cliente
+
   useEffect(() => {
     console.log('user en Perfil.jsx:', user);
     console.log('user.id en Perfil:', user?.id, 'tipo:', typeof user?.id);
@@ -81,14 +81,14 @@ const Perfil = () => {
     setSuccessMsg("");
     setErrorMsg("");
     try {
-      // Solo enviar campos modificados o no vacíos
+
       const body = {};
       Object.keys(formData).forEach((key) => {
         if (formData[key] !== "" && formData[key] !== null && typeof formData[key] !== "undefined") {
           body[key] = formData[key];
         }
       });
-      // Si la contraseña está vacía, no la mandes
+
       if (!body.contraCliente) delete body.contraCliente;
       const apiUrl = import.meta.env.VITE_API_URL;
       const res = await fetch(`${apiUrl}/clientes/actualizar/${user.id}`, {

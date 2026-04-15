@@ -1,10 +1,10 @@
 const { conection } = require("../config/database");
 
 const registrarVentaEmpleado = (req, res) => {
-    // --- CAMBIO ADMIN: Ahora recibimos idEmpleado O idAdmin ---
+
     const { idEmpleado, idAdmin, totalPago, metodoPago, productos } = req.body;
 
-    // Validamos que venga al menos UNO de los dos IDs
+
     if ((!idEmpleado && !idAdmin) || !productos || productos.length === 0) {
         return res.status(400).json({ error: "Faltan datos obligatorios (Empleado o Admin y productos)" });
     }
@@ -40,8 +40,8 @@ const registrarVentaEmpleado = (req, res) => {
         };
 
         const insertarVenta = () => {
-            // --- CAMBIO ADMIN: Insertamos idEmpleado O idAdmin según corresponda ---
-            // Si idEmpleado es undefined, se guarda NULL. Si idAdmin es undefined, se guarda NULL.
+
+
             conection.query(
                 'INSERT INTO VentasEmpleados (idEmpleado, idAdmin, totalPago, metodoPago, estado) VALUES (?, ?, ?, ?, "completada")', 
                 [idEmpleado || null, idAdmin || null, totalPago, metodoPago], 
@@ -108,7 +108,7 @@ const registrarVentaEmpleado = (req, res) => {
 };
 
 const obtenerVentasEmpleado = (req, res) => {
-  // CAMBIO: Usamos LEFT JOIN y COALESCE para que aparezcan ventas de Empleados Y Admins
+
   const consulta = `
     SELECT ve.idVentaE, ve.fechaPago, ve.horaPago, ve.metodoPago, ve.estado,
            ve.totalPago, 
@@ -177,7 +177,7 @@ const obtenerDetalleVentaEmpleado = (req, res) => {
 };
 
 const obtenerVentasAnuladas = (req, res) => {
-    // --- CAMBIO ADMIN: Usamos LEFT JOIN y COALESCE para traer nombre de Empleado O Admin ---
+
     const consulta = `
         SELECT ve.idVentaE, ve.fechaPago, ve.horaPago, ve.metodoPago, ve.totalPago, ve.estado,
                COALESCE(e.nombreEmpleado, a.nombreAdmin) AS nombreEmpleado, 
@@ -200,7 +200,7 @@ const obtenerVentasAnuladas = (req, res) => {
 };
 
 const obtenerVentasCompletadas = (req, res) => {
-    // --- CAMBIO ADMIN: Usamos LEFT JOIN y COALESCE ---
+
     const consulta = `
         SELECT ve.idVentaE, ve.fechaPago, ve.horaPago, ve.metodoPago, ve.totalPago, ve.estado,
                COALESCE(e.nombreEmpleado, a.nombreAdmin) AS nombreEmpleado, 
@@ -224,7 +224,7 @@ const obtenerVentasCompletadas = (req, res) => {
 
 const updateVenta = (req, res) => {
     const idVentaE = req.params.idVentaE;
-    // --- CAMBIO ADMIN: Recibimos idEmpleado e idAdmin ---
+
     const { totalPago, metodoPago, productos, idEmpleado, idAdmin } = req.body;
 
     if (!idVentaE || !productos || productos.length === 0) {
@@ -256,7 +256,7 @@ const updateVenta = (req, res) => {
                         conection.query('DELETE FROM DetalleVentaEmpleado WHERE idVentaE = ?', [idVentaE], (err) => {
                             if (err) return conection.rollback(() => res.status(500).json({ error: "Error borrando detalles viejos" }));
                             
-                            // --- CAMBIO ADMIN: Actualizamos idEmpleado o idAdmin ---
+
                             conection.query(
                                 'UPDATE VentasEmpleados SET totalPago = ?, metodoPago = ?, idEmpleado = ?, idAdmin = ? WHERE idVentaE = ?', 
                                 [totalPago, metodoPago, idEmpleado || null, idAdmin || null, idVentaE], 
@@ -415,10 +415,10 @@ const obtenerVentaPorId = (req, res) => {
 };
 
 const obtenerVentasParaAdmin = (req, res) => {
-    // --- CAMBIO ADMIN: Query maestra ---
-    // Usamos LEFT JOIN en Empleados y Admins.
-    // Usamos COALESCE: Si nombreEmpleado es NULL, usa nombreAdmin.
-    // Esto permite que la lista muestre nombres de admins y de empleados mezclados.
+
+
+
+
     const consulta = `
         SELECT ve.idVentaE, ve.idEmpleado, ve.idAdmin, ve.fechaPago, ve.horaPago, ve.metodoPago, ve.estado,
                ve.totalPago, 
@@ -442,7 +442,7 @@ const obtenerVentasParaAdmin = (req, res) => {
 
 const obtenerVentaParaEditar = (req, res) => {
     const { idVentaE } = req.params;
-    // --- CAMBIO ADMIN: Traemos también idAdmin ---
+
     const consulta = `
         SELECT idVentaE, idEmpleado, idAdmin, totalPago, metodoPago, estado 
         FROM VentasEmpleados 

@@ -10,7 +10,7 @@ const PanelEmpleados = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Protección de ruta
+
   useEffect(() => {
     if (!user || user.rol !== 'empleado') {
         toast.error("Acceso no autorizado.");
@@ -23,9 +23,9 @@ const PanelEmpleados = () => {
       return <div className="flex justify-center items-center h-screen"><p>Cargando...</p></div>;
   }
 
-  // Lógica para mostrar/ocultar Sidebar
-  // Si la ruta es EXACTAMENTE "/panelempleados", estamos en el dashboard de cards -> NO mostrar sidebar
-  // Si la ruta es "/panelempleados/venta", etc. -> SÍ mostrar sidebar
+
+
+
   const esDashboardInicial = location.pathname === '/panelempleados';
 
   return (

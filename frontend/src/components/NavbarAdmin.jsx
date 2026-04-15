@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link, NavLink } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 import LogoPixelSalud from "../assets/LogoPixelSalud.webp";
-// Usamos iconos vectoriales de lucide-react para mayor nitidez y consistencia
+
 import { Menu, User, LogOut, X } from "lucide-react"; 
 
 const NavbarAdmin = () => {
@@ -13,7 +13,7 @@ const NavbarAdmin = () => {
   const menuRef = useRef(null);
   const profileRef = useRef(null);
 
-  // (El useEffect se mantiene igual, funciona bien para cerrar los menús)
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -46,7 +46,7 @@ const NavbarAdmin = () => {
   const isAuthorized = user && (user.rol === 'admin' || user.rol === 'empleado');
 
   return (
-    // --- CAMBIO 1: Estilo moderno del contenedor principal (blanco, sticky, sombra sutil) ---
+
     <nav className="sticky top-0 z-50 w-full bg-secondary-100 backdrop-blur-md border-b border-gray-100 shadow-sm py-4 px-4 sm:px-8">
       
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -65,11 +65,11 @@ const NavbarAdmin = () => {
         {/* --- SECCIÓN CENTRAL (Links) - Ocupa 1/3 y se centra perfectamente --- */}
         <div className="flex-1 flex justify-center">
           {isAuthorized && (
-            // Oculto en móviles, visible en tablets/escritorio
+
             <ul className="hidden md:flex gap-8 font-semibold text-gray-600">
               <NavLink
                 to="/admin"
-                // Efecto moderno de subrayado animado al hacer hover
+
                 className={({ isActive }) => `relative group py-2 ${isActive ? 'text-primary-600' : 'hover:text-primary-600'} transition-colors duration-300`}
               >
                 <span>Panel de Administración</span>

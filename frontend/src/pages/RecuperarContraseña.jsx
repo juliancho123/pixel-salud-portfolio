@@ -10,8 +10,8 @@ const RecuperarContrasena = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  // Define la paleta de colores para tu proyecto
-  // Estos colores se usarán en todo el proyecto para mantener la consistencia
+
+
   const primaryColor = "bg-green-600";
   const primaryHover = "hover:bg-green-700";
 
@@ -19,8 +19,8 @@ const RecuperarContrasena = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      // Lógica para enviar el correo al backend
-      // Reemplaza esta URL con la ruta de tu API de backend
+
+
       await axios.post("http://localhost:5000/clientes/olvide-password", { email });
       toast.success("¡Correo enviado! Revisa tu bandeja de entrada.");
       setTimeout(() => {

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-// 1. Importamos el nuevo ícono FiX
+
 import { FiX } from 'react-icons/fi';
 import { MdLogin } from "react-icons/md";
 

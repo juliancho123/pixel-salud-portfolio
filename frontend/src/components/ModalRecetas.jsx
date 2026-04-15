@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from "react";
 const ModalRecetas = ({ isOpen, onClose, recetas, onAddAllToCart }) => {
   const modalRef = useRef(null);
 
-  // A11Y & UX: Cerrar con la tecla ESC y bloquear el scroll del body
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -14,7 +14,7 @@ const ModalRecetas = ({ isOpen, onClose, recetas, onAddAllToCart }) => {
     document.addEventListener("keydown", handleKeyDown);
     document.body.style.overflow = "hidden"; // Previene scroll de fondo
 
-    // Foco inicial en el modal para lectores de pantalla
+
     if (modalRef.current) {
       modalRef.current.focus();
     }
@@ -28,7 +28,7 @@ const ModalRecetas = ({ isOpen, onClose, recetas, onAddAllToCart }) => {
   if (!isOpen) return null;
 
   return (
-    // BACKDROP: Cubre toda la pantalla, centra el contenido. z-index alto.
+
     <div 
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-gray-900/60 backdrop-blur-sm transition-opacity"
       role="presentation"

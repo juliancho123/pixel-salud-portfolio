@@ -12,7 +12,7 @@ import { useAuthStore } from "../store/useAuthStore";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const SidebarAdmin = () => {
-  // Obtenemos 'user' (datos del usuario) y 'logoutUser' del store
+
   const { user, logoutUser } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();

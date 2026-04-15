@@ -15,20 +15,20 @@ const AdminProductos = () => {
 
   const token = useAuthStore((state) => state.token);
 
-  // Estados para creación (Modal normal)
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef();
 
-  // Estados de filtro
+
   const [busqueda, setBusqueda] = useState("");
   const [filtroCategoria, setFiltroCategoria] = useState("todas");
   const [filtroEstado, setFiltroEstado] = useState("todos");
 
-  // Paginación
+
   const [paginaActual, setPaginaActual] = useState(1);
   const itemsPorPagina = 4;
 
-  // Estado para nuevo producto
+
   const [nuevoProducto, setNuevoProducto] = useState({
     nombreProducto: "",
     descripcion: "",
@@ -56,7 +56,7 @@ const AdminProductos = () => {
     }).format(numero);
   };
 
-  // Cierra modal de creación al hacer click afuera
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -67,13 +67,13 @@ const AdminProductos = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isModalOpen]);
 
-  // Resetear paginación al filtrar
+
   useEffect(() => {
     setPaginaActual(1);
   }, [busqueda, filtroCategoria, filtroEstado]);
 
 
-  // --- 1. FUNCIÓN EDITAR CON SWEETALERT CORREGIDA ---
+
   const handleEditarProducto = async (prod) => {
     const opcionesCategorias = categorias.map(cat =>
       `<option value="${cat}" ${cat === prod.categoria ? 'selected' : ''}>${cat}</option>`
@@ -155,7 +155,7 @@ const AdminProductos = () => {
     }
   };
 
-  // --- 2. FUNCIÓN CREAR PRODUCTO ---
+
   const agregarProducto = async () => {
     try {
       const productoAEnviar = {
@@ -176,7 +176,7 @@ const AdminProductos = () => {
     }
   };
 
-  // --- 3. FUNCIÓN TOGGLE ACTIVO ---
+
   const handleToggleActiva = (prod) => {
     const accion = prod.activo ? "Desactivar" : "Activar";
     const participio = prod.activo ? "Desactivado" : "Activado";

@@ -126,7 +126,7 @@ const MedicoMisRecetas = () => { // <--- Sin props
                     <tbody className="divide-y divide-gray-100">
                         {recetasActuales.map((receta) => {
                             
-                            // --- LÓGICA DE ESTADO ---
+
                             const esActiva = Number(receta.activo) === 1;
                             const fueUsada = Number(receta.usada) === 1;
 

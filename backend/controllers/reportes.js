@@ -1,7 +1,7 @@
 const ExcelJS = require("exceljs");
 const { conection } = require("../config/database");
 
-// Función auxiliar para consultas async/await
+
 const query = (sql, params = []) => {
   return new Promise((resolve, reject) => {
     conection.query(sql, params, (err, result) => {
@@ -11,7 +11,7 @@ const query = (sql, params = []) => {
   });
 };
 
-// Función para formatear fecha
+
 const formatearFecha = (fecha) => {
   if (!fecha) return "";
   const date = new Date(fecha);
@@ -21,7 +21,7 @@ const formatearFecha = (fecha) => {
   return `${dia}/${mes}/${año}`;
 };
 
-// Estilos comunes para Excel
+
 const estilosExcel = {
   headerStyle: {
     font: { bold: true, color: { argb: "FFFFFFFF" }, size: 12 },
@@ -50,9 +50,9 @@ const estilosExcel = {
   },
 };
 
-// ==========================================
-// 1. REPORTE DE VENTAS ONLINE (Sin Cambios)
-// ==========================================
+
+
+
 const reporteVentasOnline = async (req, res) => {
   try {
     const { fechaDesde, fechaHasta, estado, metodoPago } = req.query;
@@ -103,25 +103,25 @@ const reporteVentasOnline = async (req, res) => {
 
     const ventas = await query(sql, params);
 
-    // Crear workbook
+
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Ventas Online");
 
-    // Título
+
     worksheet.mergeCells("A1:K1");
     const titleCell = worksheet.getCell("A1");
     titleCell.value = "📦 REPORTE DE VENTAS ONLINE - PIXEL SALUD";
     titleCell.style = estilosExcel.titleStyle;
     worksheet.getRow(1).height = 25;
 
-    // Información del reporte
+
     worksheet.mergeCells("A2:K2");
     const infoCell = worksheet.getCell("A2");
     infoCell.value = `Generado: ${new Date().toLocaleString("es-AR")}`;
     infoCell.alignment = { horizontal: "center" };
     infoCell.font = { italic: true, size: 10 };
 
-    // Filtros aplicados
+
     let filtrosTexto = "Filtros: ";
     if (fechaDesde) filtrosTexto += `Desde ${formatearFecha(fechaDesde)} `;
     if (fechaHasta) filtrosTexto += `Hasta ${formatearFecha(fechaHasta)} `;
@@ -135,7 +135,7 @@ const reporteVentasOnline = async (req, res) => {
     filtroCell.alignment = { horizontal: "center" };
     filtroCell.font = { size: 9, color: { argb: "FF666666" } };
 
-    // Estadísticas
+
     const totalIngresos = ventas.reduce(
       (sum, v) => sum + parseFloat(v.totalPago || 0),
       0,
@@ -162,7 +162,7 @@ const reporteVentasOnline = async (req, res) => {
     worksheet.getCell("D6").font = { bold: true };
     worksheet.getCell("G6").font = { bold: true };
 
-    // Cabecera de tabla
+
     worksheet.getRow(8).values = [
       "ID Venta",
       "Fecha",
@@ -181,7 +181,7 @@ const reporteVentasOnline = async (req, res) => {
       cell.style = estilosExcel.headerStyle;
     });
 
-    // Datos
+
     ventas.forEach((venta, index) => {
       const row = worksheet.getRow(9 + index);
       row.values = [
@@ -198,7 +198,7 @@ const reporteVentasOnline = async (req, res) => {
         venta.productos,
       ];
 
-      // Formato condicional por estado
+
       const estadoCell = row.getCell(9);
       if (venta.estado === "pendiente") {
         estadoCell.fill = {
@@ -220,11 +220,11 @@ const reporteVentasOnline = async (req, res) => {
         };
       }
 
-      // Formato de moneda
+
       row.getCell(10).numFmt = '"$"#,##0.00';
     });
 
-    // Ajustar anchos de columna
+
     worksheet.columns = [
       { key: "idVentaO", width: 10 },
       { key: "fecha", width: 12 },
@@ -239,7 +239,7 @@ const reporteVentasOnline = async (req, res) => {
       { key: "productos", width: 50 },
     ];
 
-    // Enviar archivo
+
     res.setHeader(
       "Content-Type",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -259,15 +259,15 @@ const reporteVentasOnline = async (req, res) => {
   }
 };
 
-// ==========================================
-// 2. REPORTE DE VENTAS EMPLEADOS (CORREGIDO PARA ADMIN)
-// ==========================================
+
+
+
 const reporteVentasEmpleados = async (req, res) => {
   try {
     const { fechaDesde, fechaHasta, estado, metodoPago, idEmpleado } =
       req.query;
 
-    // --- CAMBIO: Usamos LEFT JOIN y COALESCE para traer nombre de Empleado O Admin ---
+
     let sql = `
             SELECT 
                 v.idVentaE,
@@ -308,7 +308,7 @@ const reporteVentasEmpleados = async (req, res) => {
       sql += " AND v.metodoPago = ?";
       params.push(metodoPago);
     }
-    // Si se filtra por idEmpleado, mantenemos esa lógica
+
     if (idEmpleado) {
       sql += " AND v.idEmpleado = ?";
       params.push(idEmpleado);
@@ -318,8 +318,8 @@ const reporteVentasEmpleados = async (req, res) => {
 
     const ventas = await query(sql, params);
 
-    // Ranking de empleados (MANTENEMOS SOLO EMPLEADOS)
-    // Usualmente no queremos que el Admin compita en el ranking de vendedores
+
+
     const sqlRanking = `
             SELECT 
                 CONCAT(e.nombreEmpleado, ' ', e.apellidoEmpleado) as empleado,
@@ -341,25 +341,25 @@ const reporteVentasEmpleados = async (req, res) => {
 
     const ranking = await query(sqlRanking, rankingParams);
 
-    // Crear workbook
+
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Ventas Empleados");
 
-    // Título
+
     worksheet.mergeCells("A1:I1");
     const titleCell = worksheet.getCell("A1");
     titleCell.value = "🏪 REPORTE DE VENTAS EMPLEADOS - PIXEL SALUD";
     titleCell.style = estilosExcel.titleStyle;
     worksheet.getRow(1).height = 25;
 
-    // Información del reporte
+
     worksheet.mergeCells("A2:I2");
     const infoCell = worksheet.getCell("A2");
     infoCell.value = `Generado: ${new Date().toLocaleString("es-AR")}`;
     infoCell.alignment = { horizontal: "center" };
     infoCell.font = { italic: true, size: 10 };
 
-    // Filtros
+
     let filtrosTexto = "Filtros: ";
     if (fechaDesde) filtrosTexto += `Desde ${formatearFecha(fechaDesde)} `;
     if (fechaHasta) filtrosTexto += `Hasta ${formatearFecha(fechaHasta)} `;
@@ -373,7 +373,7 @@ const reporteVentasEmpleados = async (req, res) => {
     filtroCell.alignment = { horizontal: "center" };
     filtroCell.font = { size: 9, color: { argb: "FF666666" } };
 
-    // Estadísticas
+
     const totalIngresos = ventas.reduce(
       (sum, v) => sum + parseFloat(v.totalPago || 0),
       0,
@@ -400,7 +400,7 @@ const reporteVentasEmpleados = async (req, res) => {
     worksheet.getCell("D6").font = { bold: true };
     worksheet.getCell("G6").font = { bold: true };
 
-    // Ranking de empleados
+
     worksheet.getRow(8).values = ["🏆 TOP 10 EMPLEADOS"];
     worksheet.mergeCells("A8:C8");
     worksheet.getCell("A8").style = estilosExcel.subHeaderStyle;
@@ -419,13 +419,13 @@ const reporteVentasEmpleados = async (req, res) => {
       ];
       row.getCell(3).numFmt = '"$"#,##0.00';
 
-      // Medalla para top 3
+
       if (index === 0) row.getCell(1).value = `🥇 ${emp.empleado}`;
       else if (index === 1) row.getCell(1).value = `🥈 ${emp.empleado}`;
       else if (index === 2) row.getCell(1).value = `🥉 ${emp.empleado}`;
     });
 
-    // Tabla de ventas
+
     const startRow = 10 + ranking.length + 2;
     worksheet.getRow(startRow).values = ["DETALLE DE VENTAS"];
     worksheet.mergeCells(`A${startRow}:I${startRow}`);
@@ -447,7 +447,7 @@ const reporteVentasEmpleados = async (req, res) => {
       cell.style = estilosExcel.headerStyle;
     });
 
-    // Datos
+
     ventas.forEach((venta, index) => {
       const row = worksheet.getRow(startRow + 2 + index);
       row.values = [
@@ -462,7 +462,7 @@ const reporteVentasEmpleados = async (req, res) => {
         venta.productos,
       ];
 
-      // Formato condicional
+
       const estadoCell = row.getCell(7);
       if (venta.estado === "completada") {
         estadoCell.fill = {
@@ -481,7 +481,7 @@ const reporteVentasEmpleados = async (req, res) => {
       row.getCell(8).numFmt = '"$"#,##0.00';
     });
 
-    // Ajustar anchos
+
     worksheet.columns = [
       { key: "idVentaE", width: 10 },
       { key: "fecha", width: 12 },
@@ -513,14 +513,14 @@ const reporteVentasEmpleados = async (req, res) => {
   }
 };
 
-// ==========================================
-// 3. REPORTE CONSOLIDADO (CORREGIDO PARA ADMIN)
-// ==========================================
+
+
+
 const reporteConsolidado = async (req, res) => {
   try {
     const { fechaDesde, fechaHasta } = req.query;
 
-    // Ventas Online (Sin cambios)
+
     let sqlOnline = `
             SELECT 
                 'Online' as canal,
@@ -545,7 +545,7 @@ const reporteConsolidado = async (req, res) => {
       paramsOnline.push(fechaHasta);
     }
 
-    // Ventas Empleados (CORREGIDO: LEFT JOIN con Admins y COALESCE)
+
     let sqlEmpleados = `
             SELECT 
                 'Local' as canal,
@@ -576,9 +576,9 @@ const reporteConsolidado = async (req, res) => {
       query(sqlEmpleados, paramsEmpleados),
     ]);
 
-    // Productos más vendidos
-    // NOTA: Aquí no necesitamos JOIN con Empleados/Admins, solo VentasEmpleados,
-    // por lo que las ventas del Admin ya se cuentan correctamente en el stock.
+
+
+
     let sqlProductos = `
             SELECT 
                 p.nombreProducto,
@@ -606,10 +606,10 @@ const reporteConsolidado = async (req, res) => {
 
     const productosTop = await query(sqlProductos, paramsProductos);
 
-    // Crear workbook
+
     const workbook = new ExcelJS.Workbook();
 
-    // ===== HOJA 1: RESUMEN EJECUTIVO =====
+
     const wsResumen = workbook.addWorksheet("Resumen Ejecutivo");
 
     wsResumen.mergeCells("A1:F1");
@@ -624,7 +624,7 @@ const reporteConsolidado = async (req, res) => {
     wsResumen.getCell("A2").alignment = { horizontal: "center" };
     wsResumen.getCell("A2").font = { italic: true };
 
-    // Estadísticas por canal
+
     const totalOnline = ventasOnline.reduce(
       (sum, v) => sum + parseFloat(v.totalPago || 0),
       0,
@@ -690,7 +690,7 @@ const reporteConsolidado = async (req, res) => {
     wsResumen.getRow(9).getCell(3).numFmt = '"$"#,##0.00';
     wsResumen.getRow(9).getCell(5).numFmt = '"$"#,##0.00';
 
-    // Top Productos
+
     wsResumen.getRow(11).values = ["🏆 TOP 20 PRODUCTOS MÁS VENDIDOS"];
     wsResumen.mergeCells("A11:F11");
     wsResumen.getCell("A11").style = estilosExcel.subHeaderStyle;
@@ -717,7 +717,7 @@ const reporteConsolidado = async (req, res) => {
       ];
       row.getCell(5).numFmt = '"$"#,##0.00';
 
-      // Medallas para top 3
+
       if (index === 0) row.getCell(1).value = "🥇";
       else if (index === 1) row.getCell(1).value = "🥈";
       else if (index === 2) row.getCell(1).value = "🥉";
@@ -732,7 +732,7 @@ const reporteConsolidado = async (req, res) => {
       { width: 18 },
     ];
 
-    // ===== HOJA 2: VENTAS ONLINE =====
+
     const wsOnline = workbook.addWorksheet("Ventas Online");
     wsOnline.getRow(1).values = [
       "ID",
@@ -768,7 +768,7 @@ const reporteConsolidado = async (req, res) => {
       { width: 12 },
     ];
 
-    // ===== HOJA 3: VENTAS LOCAL =====
+
     const wsLocal = workbook.addWorksheet("Ventas Local");
     wsLocal.getRow(1).values = [
       "ID",
@@ -823,11 +823,11 @@ const reporteConsolidado = async (req, res) => {
   }
 };
 
-// ==========================================
-// 4. REPORTE DE PRODUCTOS VENDIDOS (SIN CAMBIOS NECESARIOS)
-// ==========================================
-// Explicación: Este reporte usa JOIN con VentasEmpleados directamente para contar stock,
-// no filtra por empleado, así que las ventas del Admin ya se cuentan bien.
+
+
+
+
+
 const reporteProductosVendidos = async (req, res) => {
   try {
     const { fechaDesde, fechaHasta, categoria } = req.query;
@@ -884,7 +884,7 @@ const reporteProductosVendidos = async (req, res) => {
 
     const productos = await query(sqlProductos, params);
 
-    // Estadísticas por categoría
+
     const sqlCategorias = `
             SELECT 
                 p.categoria,
@@ -920,11 +920,11 @@ const reporteProductosVendidos = async (req, res) => {
 
     const categorias = await query(sqlCategorias, paramsCat);
 
-    // Crear workbook
+
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Productos Vendidos");
 
-    // Título
+
     worksheet.mergeCells("A1:J1");
     const titleCell = worksheet.getCell("A1");
     titleCell.value = "💊 REPORTE DE PRODUCTOS VENDIDOS - PIXEL SALUD";
@@ -937,7 +937,7 @@ const reporteProductosVendidos = async (req, res) => {
     worksheet.getCell("A2").alignment = { horizontal: "center" };
     worksheet.getCell("A2").font = { italic: true, size: 10 };
 
-    // Resumen por categorías
+
     worksheet.getRow(4).values = ["📦 RESUMEN POR CATEGORÍA"];
     worksheet.mergeCells("A4:E4");
     worksheet.getCell("A4").style = estilosExcel.subHeaderStyle;
@@ -974,7 +974,7 @@ const reporteProductosVendidos = async (req, res) => {
       row.getCell(4).numFmt = '"$"#,##0.00';
     });
 
-    // Detalle de productos
+
     const startRow = 6 + categorias.length + 2;
     worksheet.getRow(startRow).values = ["📋 DETALLE DE PRODUCTOS"];
     worksheet.mergeCells(`A${startRow}:I${startRow}`);
@@ -1013,7 +1013,7 @@ const reporteProductosVendidos = async (req, res) => {
       row.getCell(4).numFmt = '"$"#,##0.00';
       row.getCell(9).numFmt = '"$"#,##0.00';
 
-      // Alerta de stock bajo
+
       if (prod.stock < 10 && prod.cantidadVendida > 0) {
         row.getCell(5).fill = {
           type: "pattern",

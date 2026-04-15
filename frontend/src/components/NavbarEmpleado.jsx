@@ -10,7 +10,7 @@ import { Menu } from "lucide-react";
 const NavbarEmpleado = () => {
   const navigate = useNavigate();
   
-  // 1. Traemos usuario y la función logoutUser
+
   const { user, logoutUser } = useAuthStore();
   
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,7 +18,7 @@ const NavbarEmpleado = () => {
   const menuRef = useRef(null);
   const profileRef = useRef(null);
 
-  // Clic fuera para cerrar menús
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -45,20 +45,20 @@ const NavbarEmpleado = () => {
     };
   }, []);
 
-  // 2. LÓGICA DE LOGOUT CORREGIDA
+
   const handleLogout = () => {
-    // Primero: Borra todo del store y del storage
+
     logoutUser(); 
     
-    // Segundo: Cierra menús visuales
+
     setIsProfileDropdownOpen(false);
     setIsMenuOpen(false);
     
-    // Tercero: Redirige al login (ahora sí, limpio)
+
     navigate("/login"); 
   };
 
-  // Verificamos si hay usuario logueado (para mostrar menú o login)
+
   const isAuthorized = !!user; 
 
   return (

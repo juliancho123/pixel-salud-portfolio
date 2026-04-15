@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { FiUser, FiMail, FiPhone, FiCreditCard, FiMapPin } from "react-icons/fi";
 
-// 1. Esquema de Validación Zod (Definición de Contacto)
+
 const ContactSchema = z.object({
   nombre: z.string().min(1, "Nombre completo es requerido."),
   email: z.string().min(1, "Email es requerido.").email("Email no válido."),
@@ -12,7 +12,7 @@ const ContactSchema = z.object({
 
 const CheckoutForm = ({ onSubmit, isProcessing }) => {
   
-  // 2. Inicialización de React Hook Form
+
   const { 
     register, 
     handleSubmit, 
@@ -27,7 +27,7 @@ const CheckoutForm = ({ onSubmit, isProcessing }) => {
     }
   });
 
-  // Función auxiliar para renderizar el input
+
   const FormInput = ({ name, label, icon: Icon, type = "text", placeholder }) => (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-2">

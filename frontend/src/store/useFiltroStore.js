@@ -38,7 +38,7 @@ export const useFiltroStore = create((set, get) => ({
                     return coincideCategoria && coincideNombre;
                 })
                 .sort((a, b) => {
-                    // Usar el campo correcto de precio
+
                     const precioA = Number(a.precioFinal || a.precio || a.precioRegular || 0);
                     const precioB = Number(b.precioFinal || b.precio || b.precioRegular || 0);
                     if (ordenPrecio === "menor-precio") return precioA - precioB;

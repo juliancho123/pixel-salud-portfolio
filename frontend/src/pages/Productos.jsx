@@ -43,11 +43,11 @@ const Productos = () => {
   const [showModalRecetas, setShowModalRecetas] = useState(false);
   const { agregarCarrito } = useCarritoStore();
 
-  // Estados para paginación
+
   const [paginaActual, setPaginaActual] = useState(1);
   const productosPorPagina = 10;
 
-  // Handler para agregar todos los productos de la receta al carrito
+
   const handleAddAllRecetaToCart = async () => {
     if (recetasActivas && recetasActivas.length > 0) {
       for (const receta of recetasActivas) {
@@ -71,7 +71,7 @@ const Productos = () => {
     }
   }, [productos.length, fetchProducts]);
 
-  // --- Sincronización de filtros con la query string ---
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const categoriaURL = params.get("categoria") ?? "todos";
@@ -81,10 +81,10 @@ const Productos = () => {
     setFiltroCategoria(categoriaURL);
     setBusqueda(busquedaURL);
     setOrdenPrecio(ordenURL);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [location.search]);
 
-  // Resetear página cuando cambien los filtros
+
   useEffect(() => {
     setPaginaActual(1);
   }, [filtroCategoria, busqueda, ordenPrecio]);
@@ -123,9 +123,9 @@ const Productos = () => {
     updateQueryParam("orden", value);
   };
 
-  // Filtrado especial para medicamentos con receta
+
   let productosParaMostrar = productosFiltrados;
-  // Log para debug: mostrar productos ordenados cada vez que cambia el filtro de ordenPrecio
+
 
   const esCategoriaReceta = filtroCategoria === "Medicamentos con Receta";
 
@@ -135,7 +135,7 @@ const Productos = () => {
     } else if (!recetaBuscada) {
       productosParaMostrar = [];
     } else if (recetasActivas.length > 0) {
-      // Mostrar solo el producto de la receta activa
+
       const productosRecetaIds = recetasActivas.map((r) => r.idProducto);
       productosParaMostrar = productosFiltrados.filter((p) =>
         productosRecetaIds.includes(p.idProducto),
@@ -145,7 +145,7 @@ const Productos = () => {
     }
   }
 
-  // Cálculos de paginación
+
   const totalProductos = productosParaMostrar.length;
   const totalPaginas = Math.ceil(totalProductos / productosPorPagina);
   const indiceInicio = (paginaActual - 1) * productosPorPagina;
@@ -155,7 +155,7 @@ const Productos = () => {
     indiceFin,
   );
 
-  // Funciones de navegación
+
   const irAPaginaAnterior = () => {
     if (paginaActual > 1) {
       setPaginaActual(paginaActual - 1);
@@ -175,7 +175,7 @@ const Productos = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Generar números de página para mostrar
+
   const generarNumerosPagina = () => {
     const numeros = [];
     const maxBotones = 5; // Máximo de botones de página a mostrar

@@ -9,11 +9,11 @@ const AdminMedicos = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef();
 
-  // Filtros
+
   const [busqueda, setBusqueda] = useState("");
   const [filtroEstado, setFiltroEstado] = useState("todos");
 
-  // Estados para el formulario
+
   const [medicoEditado, setMedicoEditado] = useState({
     nombreMedico: "",
     apellidoMedico: "",
@@ -56,17 +56,17 @@ const AdminMedicos = () => {
     };
   }, [isModalOpen]);
 
-  // --- FUNCIONES DE API ---
+
 
   const obtenerMedicos = async () => {
     try {
-      // Nota: Usamos minúscula '/medicos' que es lo estándar. 
-      // Si tu backend define la ruta como '/Medicos', cámbialo aquí.
+
+
       const res = await apiClient.get("/medicos");
       setMedicos(res.data);
     } catch (error) {
-      // MANEJO ESPECÍFICO PARA TU CONTROLADOR
-      // Tu backend devuelve 404 si no hay médicos (results.length === 0)
+
+
       if (error.response && error.response.status === 404) {
         setMedicos([]); // No es un error real, solo que está vacío
         console.log("La base de datos de médicos está vacía.");
@@ -96,7 +96,7 @@ const AdminMedicos = () => {
   const cancelarEdicion = () => {
     setEditandoId(null);
     setIsModalOpen(false);
-    // Limpiamos ambos estados
+
     setMedicoEditado({
       nombreMedico: "",
       apellidoMedico: "",
@@ -114,16 +114,16 @@ const AdminMedicos = () => {
   };
 
   const guardarCambios = async () => {
-    // VALIDACIÓN IMPORTANTE: Tu backend siempre hashea la contraseña.
-    // Si envías una cadena vacía, la contraseña del usuario dejará de funcionar.
+
+
     if (medicoEditado.contraMedico.trim() === "") {
         toast.warning("Debes ingresar la contraseña para confirmar la edición.");
         return;
     }
 
     try {
-      // Tu backend updateMedico NO usa el campo matrícula en el SET
-      // Solo actualiza nombre, apellido, email y contraseña.
+
+
       await apiClient.put(
         `/medicos/actualizar/${editandoId}`,
         medicoEditado
@@ -148,7 +148,7 @@ const AdminMedicos = () => {
     try {
         await apiClient.put(endpoint, {});
         
-        // Actualización optimista de la UI
+
         setMedicos(medicos.map(med => 
           med.idMedico === idMedico ? { ...med, activo: !activoActual } : med
         ));
@@ -176,7 +176,7 @@ const AdminMedicos = () => {
       toast.success("Médico creado exitosamente");
     } catch (error) {
       console.error("Error al agregar médico:", error);
-      // Tu backend devuelve 409 si ya existe email o matrícula
+
       if (error.response && error.response.status === 409) {
           toast.error("Error: El email o la matrícula ya están registrados.");
       } else {
@@ -185,9 +185,9 @@ const AdminMedicos = () => {
     }
   };
   
-  // --- FILTROS ---
+
   const medicosFiltrados = medicos.filter((med) => {
-    // Normalización del estado activo (mysql devuelve 1/0)
+
     const isActive = med.activo === 0 ? false : (med.activo === 1 ? true : med.activo === undefined ? true : med.activo);
 
     const coincideBusqueda = 
@@ -204,14 +204,14 @@ const AdminMedicos = () => {
     return coincideBusqueda && coincideEstado;
   });
 
-  // --- RENDERIZADO ---
+
   const renderMedicoModal = () => {
       const isEdit = editandoId !== null;
       
       const fields = [
           { label: "Nombre", name: "nombreMedico", type: "text" },
           { label: "Apellido", name: "apellidoMedico", type: "text" },
-          // Matrícula deshabilitada en edición porque el backend no la actualiza
+
           { label: "Matrícula", name: "matricula", type: "text", disabled: isEdit },
           { label: "Email", name: "emailMedico", type: "email" },
           { 
@@ -243,7 +243,7 @@ const AdminMedicos = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 {fields.map(({ label, name, type, disabled = false }) => {
                   
-                  // LÓGICA DE INPUT (CORRECCIÓN ANTERIOR)
+
                   const valorInput = isEdit 
                       ? medicoEditado[name] 
                       : nuevoMedico[name];

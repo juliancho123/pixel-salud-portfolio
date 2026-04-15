@@ -93,7 +93,7 @@ export const useCompraStore = create(() => ({
 
       await axios.post("http://localhost:5000/ventaOnline/crear", compra);
 
-      // Marcar receta como usada si corresponde
+
       const { token } = useAuthStore.getState();
       for (const prod of carrito) {
         if (prod.categoria === "Medicamentos con Receta" && prod.idReceta) {

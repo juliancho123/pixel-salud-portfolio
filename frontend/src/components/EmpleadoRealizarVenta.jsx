@@ -10,7 +10,7 @@ const EmpleadoRealizarVenta = () => {
   const { user } = useAuthStore();
   const idEmpleado = user?.idEmpleado || user?.id; 
 
-  // --- ESTADOS ---
+
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
   const [resultadosBusqueda, setResultadosBusqueda] = useState([]); 
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
@@ -20,15 +20,15 @@ const EmpleadoRealizarVenta = () => {
   const [metodoPago, setMetodoPago] = useState('Efectivo');
   const [total, setTotal] = useState(0);
 
-  // --- EFECTOS ---
 
-  // 1. Calcular el total
+
+
   useEffect(() => {
     const nuevoTotal = carrito.reduce((acc, item) => acc + (item.precioUnitario * item.cantidad), 0);
     setTotal(nuevoTotal);
   }, [carrito]);
 
-  // 2. Búsqueda con "debounce"
+
   useEffect(() => {
     if (terminoBusqueda.length < 3) {
       setResultadosBusqueda([]);
@@ -39,7 +39,7 @@ const EmpleadoRealizarVenta = () => {
   }, [terminoBusqueda]);
 
 
-  // --- FUNCIONES ---
+
 
   const buscarProductos = async (term) => {
     try {
@@ -77,7 +77,7 @@ const EmpleadoRealizarVenta = () => {
         return;
     }
 
-    // Validación Receta
+
     if (productoSeleccionado.requiereReceta && !recetaPresentada) {
         Swal.fire({
             title: '⚠️ Requiere Receta',
@@ -132,7 +132,7 @@ const EmpleadoRealizarVenta = () => {
       try {
           const response = await apiClient.post('/ventasEmpleados/crear', ventaData);
           
-          // Limpieza
+
           setCarrito([]);
           setTotal(0);
           setTerminoBusqueda('');
@@ -149,7 +149,7 @@ const EmpleadoRealizarVenta = () => {
             cancelButtonText: 'Registrar Nueva Venta'
           }).then((result) => {
             if (result.isConfirmed) {
-              // --- NAVEGACIÓN NUEVA ---
+
               navigate('/panelempleados/misventas'); 
             }
           });
@@ -165,7 +165,7 @@ const EmpleadoRealizarVenta = () => {
   };
 
 
-  // --- RENDERIZADO ---
+
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-6 flex flex-col animate-fadeIn">
       

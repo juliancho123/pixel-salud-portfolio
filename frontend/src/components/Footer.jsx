@@ -20,21 +20,21 @@ const Footer = () => {
   const [usuarioEmail, setUsuarioEmail] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
 
-  // 4. useEffect actualizado: Leer el estado de suscripción y el email del usuario
+
   useEffect(() => {
-    // Si el usuario está logueado, su email es user.email o user.emailCliente
+
     const currentEmail = user?.email || ""; 
 
     if (currentEmail) {
         setUsuarioEmail(currentEmail);
         
-        // Verifica el estado de suscripción en localStorage
+
         const isAlreadySubscribed = localStorage.getItem(
           `subscribed_${currentEmail}`
         );
         setIsSubscribed(isAlreadySubscribed === "true");
     } else {
-        // Usuario deslogueado
+
         setUsuarioEmail("");
         setIsSubscribed(false);
         setEmail(""); 

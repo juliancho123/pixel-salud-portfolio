@@ -14,7 +14,7 @@ const NavbarAvatar = ({ user, size = "medium" }) => {
     large: "h-3 w-3",
   };
 
-  // Si hay imagen, mostrar imagen
+
   if (user?.imagen) {
     return (
       <div className="relative">
@@ -28,7 +28,7 @@ const NavbarAvatar = ({ user, size = "medium" }) => {
     );
   }
 
-  // Si no hay imagen, mostrar iniciales
+
   const iniciales = `${user?.nombre?.charAt(0) || ''}${user?.apellido?.charAt(0) || ''}`.toUpperCase();
   return (
     <div className={`relative flex items-center justify-center rounded-full bg-primary-100 text-primary-700 font-bold ${sizeClasses[size]}`}> 

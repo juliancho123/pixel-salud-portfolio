@@ -9,23 +9,23 @@ const MedicoNuevaReceta = () => { // <--- Sin props
   const navigate = useNavigate(); // <--- Hook
   const { user } = useAuthStore();
   
-  // --- Estados de Paciente ---
+
   const [dniPaciente, setDniPaciente] = useState('');
   const [pacienteData, setPacienteData] = useState(null); 
   const [buscandoPaciente, setBuscandoPaciente] = useState(false);
 
-  // --- Estados de Medicamentos ---
+
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
   const [resultadosBusqueda, setResultadosBusqueda] = useState([]);
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
   const [cantidad, setCantidad] = useState(1);
   
-  // LISTA DE PRODUCTOS A RECETAR (CARRITO)
+
   const [listaRecetas, setListaRecetas] = useState([]);
 
-  // ------------------------------------------------------
-  // 1. BUSCADOR DE PACIENTE
-  // ------------------------------------------------------
+
+
+
   useEffect(() => {
     if (dniPaciente.length < 7) {
         setPacienteData(null);
@@ -48,9 +48,9 @@ const MedicoNuevaReceta = () => { // <--- Sin props
   }, [dniPaciente]);
 
 
-  // ------------------------------------------------------
-  // 2. BUSCADOR DE MEDICAMENTOS
-  // ------------------------------------------------------
+
+
+
   useEffect(() => {
     if (terminoBusqueda.length < 3) {
       setResultadosBusqueda([]);
@@ -66,9 +66,9 @@ const MedicoNuevaReceta = () => { // <--- Sin props
   }, [terminoBusqueda]);
 
 
-  // ------------------------------------------------------
-  // 3. FUNCIONES (HANDLERS)
-  // ------------------------------------------------------
+
+
+
 
   const seleccionarProducto = (prod) => {
     setProductoSeleccionado(prod);
@@ -100,7 +100,7 @@ const MedicoNuevaReceta = () => { // <--- Sin props
       setListaRecetas(nuevaLista);
   };
 
-  // --- REGISTRAR PACIENTE (MODAL) ---
+
   const handleNuevoPaciente = async () => {
     const { value: formValues } = await Swal.fire({
       title: '<h2 class="text-2xl font-bold text-blue-800">👤 Nuevo Paciente</h2>',
@@ -172,7 +172,7 @@ const MedicoNuevaReceta = () => { // <--- Sin props
     }
   };
 
-  // --- EMITIR RECETA ---
+
   const handleEmitirTodo = async () => {
     if (!pacienteData) {
         Swal.fire('Paciente no válido', 'Debes ingresar un DNI de un paciente registrado.', 'error');
@@ -217,9 +217,9 @@ const MedicoNuevaReceta = () => { // <--- Sin props
     }
   };
 
-  // ------------------------------------------------------
-  // RENDERIZADO
-  // ------------------------------------------------------
+
+
+
   return (
     <div className="p-6 max-w-6xl mx-auto w-full animate-fadeIn">
       

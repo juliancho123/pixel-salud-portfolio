@@ -24,7 +24,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { loginUser } = useAuthStore();
 
-  // En Login.jsx
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,21 +35,21 @@ const Login = () => {
         contrasenia: user.password,
       });
 
-      // 1. Obtenemos la data COMPLETA (que Postman demostró que SÍ trae permisos)
+
       const data = response.data || {};
 
-      // 2. ¡Validamos que tengamos lo mínimo!
+
       if (!data.rol || !data.token) {
         toast.warn("No se pudo obtener la sesión completa (rol o token).");
         setIsSubmitting(false);
         return;
       }
 
-      // 3. ¡¡¡EL ARREGLO!!! Le pasamos 'data' (la respuesta COMPLETA) a loginUser.
-      // ¡useAuthStore se encarga de todo lo demás!
+
+
       loginUser(data);
 
-      // 4. El resto de tu lógica de navegación (esto ya estaba bien)
+
       const nombreCapitalizado =
         (data.nombre?.charAt(0)?.toUpperCase() || "") +
         (data.nombre?.slice(1) || "");
@@ -69,7 +69,7 @@ const Login = () => {
         navigate("/");
       }
     } catch (error) {
-      // ... (tu manejo de errores estaba perfecto)
+
       const serverMsg =
         error.response?.data?.msg ||
         error.response?.data?.mensaje ||

@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 
 const AdminReportes = () => {
-  // Estados para filtros
+
   const [filtros, setFiltros] = useState({
     fechaDesde: "",
     fechaHasta: "",
@@ -40,10 +40,10 @@ const AdminReportes = () => {
     productos: false,
   });
 
-  // Estado para colapsar filtros en mobile
+
   const [filtrosAbiertos, setFiltrosAbiertos] = useState(false);
 
-  // Función para descargar reportes con feedback accesible
+
   const descargarReporte = async (tipo) => {
     try {
       setDescargando((prev) => ({ ...prev, [tipo]: true }));
@@ -73,7 +73,7 @@ const AdminReportes = () => {
         responseType: "blob",
       });
 
-      // Crear blob y descargar
+
       const blob = new Blob([response.data], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
@@ -99,7 +99,7 @@ const AdminReportes = () => {
     } catch (error) {
       console.error("Error descargando reporte:", error);
 
-      // Leer el mensaje de error del Blob
+
       if (error.response?.data instanceof Blob) {
         const text = await error.response.data.text();
         console.error("Error message from server:", text);
@@ -133,7 +133,7 @@ const AdminReportes = () => {
     }
   };
 
-  // Función para establecer fechas rápidas
+
   const establecerRangoFecha = (tipo) => {
     const hoy = new Date();
     let desde = new Date();

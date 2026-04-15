@@ -7,7 +7,7 @@ import { useAuthStore } from "../store/useAuthStore";
 import { Search, Plus, Eye, Edit, ShoppingBag, XCircle, Trash2, RotateCcw, UserCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
-// --- REDUCER ---
+
 const ventaReducer = (state, action) => {
     switch (action.type) {
         case 'SET_FIELD': return { ...state, [action.field]: action.value };
@@ -21,7 +21,7 @@ const ventaReducer = (state, action) => {
 };
 
 const AdminVentasE = () => {
-    // CAMBIO: Agregamos idAdmin al estado inicial
+
     const initialState = {
         idEmpleado: null, 
         idAdmin: null,
@@ -45,7 +45,7 @@ const AdminVentasE = () => {
     const [isModalOpen, setIsModalOpen] = useState(false); 
     const [ventaForm, dispatch] = useReducer(ventaReducer, initialState);
     
-    // Buscador Modal
+
     const [terminoBusqueda, setTerminoBusqueda] = useState('');
     const [resultadosBusqueda, setResultadosBusqueda] = useState([]); 
     const [productoSeleccionado, setProductoSeleccionado] = useState(null);
@@ -55,10 +55,10 @@ const AdminVentasE = () => {
     const { user } = useAuthStore();
     const permisos = user?.permisos || {}; 
 
-    // --- AUTO-DETECTAR USUARIO (ADMIN O EMPLEADO) ---
+
     useEffect(() => {
         if (user && !isEditing) {
-            // CAMBIO: Lógica para detectar si es Admin o Empleado
+
             if (user.rol === 'admin') {
                 dispatch({ type: 'SET_FIELD', field: 'idAdmin', value: user.id });
                 dispatch({ type: 'SET_FIELD', field: 'idEmpleado', value: null });
@@ -87,7 +87,7 @@ const AdminVentasE = () => {
         obtenerVentas();
     }, []);
 
-    // Calcular Total Automático
+
     useEffect(() => {
         const nuevoTotal = ventaForm.productos.reduce((acc, prod) => {
             return acc + (Number(prod.cantidad) * Number(prod.precioUnitario));
@@ -97,7 +97,7 @@ const AdminVentasE = () => {
         }
     }, [ventaForm.productos]);
 
-    // Buscador con delay
+
     useEffect(() => {
         if (terminoBusqueda.length < 3) {
             setResultadosBusqueda([]);
@@ -168,7 +168,7 @@ const AdminVentasE = () => {
         setProductoSeleccionado(null);
         setTerminoBusqueda('');
         
-        // Reiniciamos IDs según el usuario logueado
+
         if (user) {
             if (user.rol === 'admin') {
                 dispatch({ type: 'SET_FIELD', field: 'idAdmin', value: user.id });
@@ -199,7 +199,7 @@ const AdminVentasE = () => {
             setEditingId(venta.idVentaE);
             setNombreVendedorOriginal(`${venta.nombreEmpleado} ${venta.apellidoEmpleado}`);
 
-            // CAMBIO: Carga condicional de ID
+
             dispatch({ 
                 type: 'LOAD_SALE', 
                 payload: {
@@ -222,7 +222,7 @@ const AdminVentasE = () => {
     };
 
     const handleSubmit = async () => {
-        // CAMBIO: Validación flexible (acepta Empleado O Admin)
+
         const tieneVendedor = ventaForm.idEmpleado || ventaForm.idAdmin;
         
         if (!tieneVendedor || ventaForm.productos.length === 0) {
@@ -333,7 +333,7 @@ const AdminVentasE = () => {
         }
     };
 
-    // --- FILTRADO ---
+
     const ventasFiltradas = ventas.filter((v) => {
         const termino = filtro.toLowerCase();
         const id = v.idVentaE?.toString() || '';
@@ -359,7 +359,7 @@ const AdminVentasE = () => {
     const formatearFecha = (fecha) => !fecha ? "-" : new Date(fecha).toLocaleDateString("es-ES");
     const formatearMoneda = (val) => new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(Number(val) || 0);
 
-    // --- MODAL ---
+
     const renderModalRegistro = () => (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm overflow-hidden">
             <div className="bg-white rounded-xl shadow-2xl w-full max-w-6xl h-[90vh] flex flex-col animate-fadeIn overflow-hidden">

@@ -12,7 +12,7 @@ import {
 import { useCarritoStore } from "../store/useCarritoStore";
 
 const formatPrice = (value) => {
-  // Manejar casos donde value pueda ser NaN, undefined o null
+
   const numericValue = Number(value) || 0;
   return new Intl.NumberFormat("es-AR", { 
     style: "currency", 

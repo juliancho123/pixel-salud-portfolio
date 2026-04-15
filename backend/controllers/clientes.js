@@ -6,7 +6,7 @@ const { enviarCorreoRecuperacion } = require("../helps/envioMail")
 
 const query = util.promisify(conection.query).bind(conection);
 
-// --- CREAR CLIENTE ---
+
 const crearCliente = async (req, res) => {
   const { nombreCliente, apellidoCliente, contraCliente, emailCliente, dni } = req.body;
 
@@ -39,7 +39,7 @@ const crearCliente = async (req, res) => {
   );
 };
 
-// --- GET CLIENTES BAJADOS ---
+
 const getClienteBajados = (req, res) => {
   const consulta = "SELECT * FROM Clientes where activo = false";
 
@@ -55,7 +55,7 @@ const getClienteBajados = (req, res) => {
   });
 };
 
-// --- GET CLIENTES ---
+
 const getClientes = (req, res) => {
   const consulta = "SELECT idCliente, nombreCliente, apellidoCliente, emailCliente, dni, activo, rol FROM Clientes";
 
@@ -68,7 +68,7 @@ const getClientes = (req, res) => {
   });
 };
 
-// --- GET UN CLIENTE ---
+
 const getCliente = (req, res) => {
   const id = req.params.id;
   const consulta = "select * from clientes where idCliente =?";
@@ -84,7 +84,7 @@ const getCliente = (req, res) => {
   });
 };
 
-// --- UPDATE CLIENTE ---
+
 const updateCliente = async (req, res) => {
   const idCliente = req.params.idCliente;
   let {
@@ -142,7 +142,7 @@ const updateCliente = async (req, res) => {
   }
 };
 
-// --- BAJA CLIENTE ---
+
 const darBajaCliente = (req, res) => {
   const id = req.params.id;
   const consulta = "update clientes set activo = false where idCliente =?";
@@ -155,7 +155,7 @@ const darBajaCliente = (req, res) => {
   });
 };
 
-// --- ACTIVAR CLIENTE ---
+
 const activarCliente = (req, res) => {
   const id = req.params.id;
   const consulta = "update clientes set activo = true where idCliente =?";
@@ -168,7 +168,7 @@ const activarCliente = (req, res) => {
   });
 };
 
-// --- BUSCAR POR DNI ---
+
 const buscarClientePorDNI = (req, res) => {
   const { dni } = req.params;
   const consulta = "SELECT nombreCliente, apellidoCliente, dni FROM Clientes WHERE dni = ?";
@@ -180,7 +180,7 @@ const buscarClientePorDNI = (req, res) => {
   });
 };
 
-// --- REGISTRO EXPRESS ---
+
 const registrarPacienteExpress = async (req, res) => {
   const { nombre, apellido, dni, email } = req.body;
 
@@ -213,11 +213,7 @@ const registrarPacienteExpress = async (req, res) => {
   }
 };
 
-// ========================================================
-// --- NUEVAS FUNCIONES: RECUPERACIÓN DE CONTRASEÑA ---
-// ========================================================
 
-// 1. SOLICITAR (Recibe email -> Genera Token -> Manda Mail)
 const olvideContrasena = async (req, res) => {
   const { email } = req.body;
 
@@ -226,7 +222,7 @@ const olvideContrasena = async (req, res) => {
   }
 
   try {
-    // Buscar si existe el cliente
+  
     const buscarQuery = "SELECT * FROM Clientes WHERE emailCliente = ?";
     const users = await query(buscarQuery, [email]);
 
@@ -236,15 +232,15 @@ const olvideContrasena = async (req, res) => {
 
     const usuario = users[0];
 
-    // Generar Token y Fecha de Expiración (1 hora)
+    
     const token = crypto.randomBytes(32).toString("hex");
     const expiracion = new Date(Date.now() + 3600000); // 1 hora desde ahora
 
-    // Guardar en Base de Datos
+    
     const updateQuery = "UPDATE Clientes SET tokenRecuperacion = ?, tokenExpiracion = ? WHERE idCliente = ?";
     await query(updateQuery, [token, expiracion, usuario.idCliente]);
 
-    // Enviar Email
+    
     await enviarCorreoRecuperacion(email, usuario.nombreCliente, token);
 
     res.json({ message: "Se ha enviado un correo con las instrucciones." });
@@ -255,17 +251,17 @@ const olvideContrasena = async (req, res) => {
   }
 };
 
-// 2. RESTABLECER (Recibe token y nueva clave en BODY)
+
 const nuevoPassword = async (req, res) => {
   const { token } = req.params; 
-  const { nuevaPassword } = req.body; // <--- 1. Aquí la recibimos como 'nuevaPassword'
+  const { nuevaPassword } = req.body;
 
   if (!token || !nuevaPassword) {
       return res.status(400).json({ error: "Datos incompletos." });
   }
 
   try {
-    // 1. Buscar usuario con ese token y que NO haya expirado
+   
     const buscarToken = "SELECT * FROM Clientes WHERE tokenRecuperacion = ? AND tokenExpiracion > NOW()";
     const users = await query(buscarToken, [token]);
 
@@ -275,14 +271,13 @@ const nuevoPassword = async (req, res) => {
 
     const usuario = users[0];
 
-    // 2. Hashear la nueva contraseña
+    
     const salt = await bcryptjs.genSalt(10);
     
-    // --- CORRECCIÓN AQUÍ ---
-    // Antes decía 'newPassword', ahora usamos 'nuevaPassword' que es la variable correcta
+    
     const contraEncrip = await bcryptjs.hash(nuevaPassword, salt); 
 
-    // 3. Actualizar Password y borrar el token
+  
     const updatePass = "UPDATE Clientes SET contraCliente = ?, tokenRecuperacion = NULL, tokenExpiracion = NULL WHERE idCliente = ?";
     await query(updatePass, [contraEncrip, usuario.idCliente]);
 

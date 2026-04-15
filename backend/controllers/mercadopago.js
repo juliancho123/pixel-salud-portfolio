@@ -3,12 +3,12 @@ const { MercadoPagoConfig, Preference, Payment } = require("mercadopago");
 const { conection } = require("../config/database");
 const jwt = require("jsonwebtoken");
 
-// Configuración del cliente de Mercado Pago
+
 const client = new MercadoPagoConfig({
   accessToken: process.env.MP_ACCESS_TOKEN,
 });
 
-// Middleware para verificar JWT
+
 const verifyToken = (req, res, next) => {
   try {
     const authHeader = req.header("Auth") || req.header("auth");
@@ -27,7 +27,7 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-// Función para obtener productos de la base de datos
+
 const getProductsByIds = (productIds) => {
   if (productIds.length === 0) return Promise.resolve([]);
 
@@ -61,7 +61,7 @@ const getProductsByIds = (productIds) => {
   });
 };
 
-// Función para crear venta online en la base de datos
+
 const createVentaOnline = (ventaData) => {
   return new Promise((resolve, reject) => {
     const {
@@ -91,14 +91,14 @@ const createVentaOnline = (ventaData) => {
   });
 };
 
-// Inserta los items de la venta online en la tabla DetalleVentaOnline
+
 const createDetalleVentaOnline = (idVentaO, items) => {
   return new Promise((resolve, reject) => {
     if (!items || items.length === 0) {
       return resolve();
     }
 
-    // Normaliza los campos por si vienen con id o idProducto
+
     const values = items.map((item) => [
       idVentaO,
       item.idProducto ?? item.id, // acepta ambos
@@ -120,7 +120,7 @@ const createDetalleVentaOnline = (idVentaO, items) => {
   });
 };
 
-// Función para actualizar stock de productos
+
 const updateProductStock = (items) => {
   const promises = items.map((item) => {
     return new Promise((resolve, reject) => {
@@ -146,14 +146,14 @@ const updateProductStock = (items) => {
   return Promise.all(promises);
 };
 
-// Crear orden de pago con JWT
+
 exports.createOrder = [
   verifyToken,
   async (req, res) => {
     const { products, customer_info, discount = 0 } = req.body;
     const userId = req.user.id;
 
-    // Limpiar y validar URLs
+
     const frontendUrl = process.env.FRONTEND_URL?.trim();
     const backendUrl = process.env.BACKEND_URL?.trim();
 
@@ -197,7 +197,7 @@ exports.createOrder = [
         });
       }
 
-      // Verificar stock disponible
+
       const stockErrors = [];
       dbProducts.forEach((product) => {
         const requestedQuantity = productQuantities[product.idProducto];
@@ -218,7 +218,7 @@ exports.createOrder = [
         });
       }
 
-      // Calcular totales
+
       let subtotal = 0;
       const items = dbProducts.map((product) => {
         const priceToUse = product.precioFinal || product.precio;
@@ -243,7 +243,7 @@ exports.createOrder = [
       const externalReference = `venta_${userId}_${Date.now()}`;
       const preference = new Preference(client);
 
-      // Construir el body de la preferencia
+
       const preferenceBody = {
         items,
         payer: {
@@ -269,7 +269,7 @@ exports.createOrder = [
         notification_url: `${backendUrl}/mercadopago/notifications`,
       };
 
-      // ✅ SOLO EN PRODUCCIÓN REAL usar auto_return
+
       if (isProduction) {
         preferenceBody.auto_return = "approved";
       }
@@ -297,7 +297,7 @@ exports.createOrder = [
       console.log("Back URLs configuradas:", preferenceBody.back_urls);
       console.log("================================");
 
-      // Crear venta en la base de datos (estado pendiente)
+
       const idVentaO = await createVentaOnline({
         idCliente: userId,
         preferenceId: response.id,
@@ -307,7 +307,7 @@ exports.createOrder = [
         externalReference: externalReference,
       });
 
-      // Crear detalles de la venta
+
       await createDetalleVentaOnline(idVentaO, items);
 
       res.json({
@@ -330,7 +330,7 @@ exports.createOrder = [
   },
 ];
 
-// Webhook robusto para MercadoPago: maneja payment, merchant_order, verifica firma y consulta por resource
+
 const crypto = require("crypto");
 
 exports.receiveWebhook = async (req, res) => {
@@ -339,7 +339,7 @@ exports.receiveWebhook = async (req, res) => {
   console.log("Headers:", JSON.stringify(req.headers, null, 2));
   console.log("Body recibido:", JSON.stringify(req.body, null, 2));
   
-  // Registrar detalles específicos de la notificación
+
   const { type, data, action, id, topic, resource } = req.body;
   console.log(`🔔 Detalles de notificación:`);
   console.log(`- Tipo: ${type || 'N/A'}`);
@@ -352,7 +352,7 @@ exports.receiveWebhook = async (req, res) => {
     console.log(`- Data ID: ${data.id}`);
   }
 
-  // Verificar firma del webhook (opcional, recomendado)
+
   const signature = req.headers["x-signature"];
   if (signature && process.env.MP_WEBHOOK_SECRET) {
     const [tsPart, v1Part] = signature.split(",").map((s) => s.trim());
@@ -373,16 +373,16 @@ exports.receiveWebhook = async (req, res) => {
   }
 
   try {
-    // ✅ RESPONDER INMEDIATAMENTE a MercadoPago
+
     res.status(200).send("OK");
     console.log("✅ Respuesta 200 OK enviada a MercadoPago");
 
-    // MercadoPago puede enviar dos formatos:
-    // 1. { type, data, action, id, ... }
-    // 2. { topic, resource, ... }
+
+
+
     const { type, data, action, id, topic, resource } = req.body;
 
-    // Preferir type, pero si no existe usar topic
+
     const notificationType = type || topic;
 
     console.log("Type:", notificationType);
@@ -391,19 +391,19 @@ exports.receiveWebhook = async (req, res) => {
     console.log("ID:", id);
     console.log("Resource:", resource);
 
-    // 🎯 DETECTAR Y MANEJAR DIFERENTES TIPOS DE NOTIFICACIÓN
+
     if (notificationType === "payment") {
-      // Si viene resource, consultar por resource
+
       if (resource) {
         console.log("🔍 Procesando recurso de pago:", resource);
         await handlePaymentResource(resource);
       } else if (data?.id) {
-        // ✅ USAR data.id (ID del pago real), NO el id del webhook
+
         const paymentId = data.id;
         console.log(`🔍 Procesando notificación de pago (${action || 'sin acción'})`);
         console.log(`💳 Payment ID real: ${paymentId}`);
         
-        // 🎯 IGNORAR payment.created - solo procesar cuando el pago se actualiza
+
         if (action === "payment.created") {
           console.log("ℹ️ Webhook de payment.created IGNORADO - Esperando payment.updated");
           console.log("   Razón: El pago puede no estar disponible aún en la API");
@@ -411,12 +411,12 @@ exports.receiveWebhook = async (req, res) => {
           return;
         }
         
-        // Procesar solo payment.updated y payment.authorized
+
         if (["payment.updated", "payment.authorized"].includes(action)) {
           await handlePaymentNotification(paymentId, req.body);
         } else {
           console.log(`ℹ️ Acción de pago no manejada: ${action}. Consultando estado actual...`);
-          // Si es una acción desconocida, consultar el estado actual del pago
+
           try {
             const payment = new Payment(client);
             const paymentDetails = await payment.get({ id: paymentId });
@@ -448,11 +448,11 @@ exports.receiveWebhook = async (req, res) => {
 
   console.log("=== FIN WEBHOOK ===\n");
 };
-// Consulta el recurso de pago por URL (según documentación oficial)
+
 async function handlePaymentResource(resourceUrl) {
   try {
     const payment = new Payment(client);
-    // Extraer el ID del pago desde la URL si es posible
+
     const match = resourceUrl.match(/\/payments\/(\d+)/);
     const paymentId = match ? match[1] : null;
     if (!paymentId) {
@@ -520,7 +520,7 @@ async function handleMerchantOrderResource(resourceUrl) {
   }
 }
 
-// 🎯 MANEJAR NOTIFICACIONES DE PAGO CON LÓGICA DE REINTENTO
+
 async function handlePaymentNotification(
   paymentId,
   webhookBody,
@@ -536,7 +536,7 @@ async function handlePaymentNotification(
   console.log(`🔍 Action: ${webhookBody.action}`);
   console.log(`🔍 Live mode: ${webhookBody.live_mode}`);
 
-  // 🎯 DETECTAR PAGOS DE PRUEBA (puedes ajustar la lista de testIds)
+
   if (isTestPayment(paymentId)) {
     console.log(
       "✅ NOTIFICACIÓN DE PRUEBA - Webhook funcionando correctamente"
@@ -544,8 +544,8 @@ async function handlePaymentNotification(
     return;
   }
 
-  // ⚠️ Si es payment.created, esperar más tiempo antes del primer intento
-  // porque el pago puede no estar disponible inmediatamente
+
+
   if (webhookBody.action === "payment.created") {
     console.log("⏳ Webhook de payment.created - Esperando 5s antes de consultar...");
     await new Promise((resolve) => setTimeout(resolve, 5000));
@@ -570,7 +570,7 @@ async function handlePaymentNotification(
       console.log("  - payment_method_id:", paymentDetails.payment_method_id);
       console.log("  - payment_type_id:", paymentDetails.payment_type_id);
 
-      // 🎯 ACTUALIZAR BASE DE DATOS SEGÚN ESTADO
+
       await updatePaymentInDatabase(paymentDetails);
       return; // ÉXITO: Salir de la función si la consulta es exitosa
     } catch (paymentError) {
@@ -583,7 +583,7 @@ async function handlePaymentNotification(
             delayMs / 1000
           }s...`
         );
-        // Esperar antes de reintentar
+
         await new Promise((resolve) => setTimeout(resolve, delayMs));
         continue; // Ir al siguiente intento
       } else {
@@ -602,13 +602,13 @@ async function handlePaymentNotification(
   }
 }
 
-// 🔍 DETECTAR PAGOS DE PRUEBA
+
 function isTestPayment(paymentId) {
   const testIds = ["123456", "1325317138", "12345678"];
   return testIds.includes(paymentId.toString());
 }
 
-// 💾 ACTUALIZAR PAGO EN BASE DE DATOS
+
 async function updatePaymentInDatabase(paymentDetails) {
   const {
     id: payment_id,
@@ -634,7 +634,7 @@ async function updatePaymentInDatabase(paymentDetails) {
     return;
   }
 
-  // ✅ PAGO APROBADO O AUTORIZADO
+
   if (["approved", "authorized"].includes(status)) {
     console.log(`✅ PAGO APROBADO - Actualizando venta: ${external_reference}`);
 
@@ -669,7 +669,7 @@ async function updatePaymentInDatabase(paymentDetails) {
           return;
         }
 
-        // ACTUALIZAR VENTA A "RETIRADO" (equivalente a aprobado)
+
         const updateVentaSql = `
         UPDATE VentasOnlines 
         SET estado = 'retirado',
@@ -689,14 +689,14 @@ async function updatePaymentInDatabase(paymentDetails) {
 
             console.log(`✅ Venta ${venta.idVentaO} actualizada a 'aprobado'`);
 
-            // ACTUALIZAR STOCK
+
             await updateStockForOrder(venta.idVentaO);
           }
         );
       }
     );
   }
-  // ❌ PAGO RECHAZADO O CANCELADO
+
   else if (["rejected", "cancelled", "refunded", "charged_back"].includes(status)) {
     console.log(
       `❌ PAGO RECHAZADO - Marcando como cancelado: ${external_reference}`
@@ -718,11 +718,11 @@ async function updatePaymentInDatabase(paymentDetails) {
       }
     });
   }
-  // ⏳ OTROS ESTADOS - Establecer como 'pendiente' por defecto
+
   else {
     console.log(`ℹ️ Pago en estado: ${status} - Estableciendo como 'pendiente'`);
     
-    // Actualizar el estado a 'pendiente' para cualquier otro estado no manejado
+
     const updateStatusSql = `
       UPDATE VentasOnlines 
       SET estado = 'pendiente',
@@ -745,7 +745,7 @@ async function updatePaymentInDatabase(paymentDetails) {
   }
 }
 
-// 📦 ACTUALIZAR STOCK (tu función existente)
+
 async function updateStockForOrder(idVentaO) {
   const getDetallesSql = `
     SELECT idProducto, cantidad 
@@ -773,7 +773,7 @@ async function updateStockForOrder(idVentaO) {
   });
 }
 
-// Obtener historial de ventas del usuario
+
 exports.getUserOrders = [
   verifyToken,
   async (req, res) => {
@@ -850,7 +850,7 @@ exports.getUserOrders = [
   },
 ];
 
-// Función para limpiar carrito después de una compra exitosa
+
 exports.clearUserCart = [
   verifyToken,
   async (req, res) => {

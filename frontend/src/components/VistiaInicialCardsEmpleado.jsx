@@ -8,7 +8,7 @@ const VistaInicialCardsEmpleado = () => { // 2. Ya no esperamos recibir 'user' p
   const { user } = useAuthStore(); // 3. Sacamos el usuario del estado global
   const permisos = user?.permisos || {};
 
-  // Lógica para el botón de Ventas Totales
+
   const mostrarVentasTotales = permisos.ver_ventasTotalesE === 1 || permisos.ver_ventasTotalesE === true;
 
   return (

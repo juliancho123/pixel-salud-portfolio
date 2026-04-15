@@ -8,7 +8,7 @@ import Header from "../components/Header";
 import { ChevronRight, Home } from "lucide-react";
 import CheckoutForm from "../components/CheckoutForm";
 
-// Función de utilidad para formatear precio a ARS (moneda con símbolo)
+
 const formatPrice = (value) => {
   const numericValue = Number(value) || 0;
   return new Intl.NumberFormat("es-AR", {
@@ -39,7 +39,7 @@ const Checkout = () => {
     setIsAuthenticated(true);
   }, [navigate, token]);
 
-  // Cálculo del subtotal
+
   const subtotal = useMemo(() => {
     return carrito.reduce((acc, prod) => {
       const priceToUse =
@@ -113,15 +113,15 @@ const onSubmit = useCallback(async (data) => {
       throw new Error(responseData.message || `Error ${response.status}`);
     }
 
-    // ✅ ADAPTACIÓN PARA FORZAR SANDBOX LOCALMENTE
-    // El backend ahora devuelve la URL de sandbox en el campo init_point
+
+
     const initPoint = responseData.init_point;
     
     if (!initPoint) {
       throw new Error("No se recibió URL de pago del servidor");
     }
 
-    // Información del Pago simplificada para pruebas locales
+
     const paymentMode = "PRUEBAS (FORZADO)";
 
     console.log("\n🎯 Información del Pago:");
@@ -140,7 +140,7 @@ const onSubmit = useCallback(async (data) => {
         autoClose: 2000,
       });
       
-      // Pequeño delay para que se vea el toast
+
       setTimeout(() => {
         console.log("🚀 Redirigiendo a:", initPoint);
         window.location.href = initPoint; 
@@ -179,7 +179,7 @@ const onSubmit = useCallback(async (data) => {
     }).format(numericPrice);
   };
 
-  // Manejo de carrito vacío
+
   if (carrito.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -205,7 +205,7 @@ const onSubmit = useCallback(async (data) => {
     );
   }
 
-  // Manejo de autenticación pendiente
+
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gray-50">

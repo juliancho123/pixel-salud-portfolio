@@ -31,7 +31,7 @@ const Registro = () => {
     const { name, value } = e.target;
     let newValue = value;
     
-    // Solo números para el DNI
+
     if (name === 'dni') {
         newValue = value.replace(/\D/g, '');
     }
@@ -43,7 +43,7 @@ const Registro = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validaciones básicas antes de enviar
+
     if (!form.nombreCliente || !form.apellidoCliente || !form.email || !form.contraCliente || !form.dni) {
         toast.warning("Por favor completa todos los campos.");
         return;
@@ -51,7 +51,7 @@ const Registro = () => {
 
     setIsSubmitting(true);
     
-    // Preparamos el objeto EXACTO que espera el backend
+
     const dataToSend = {
         nombreCliente: form.nombreCliente.trim(),
         apellidoCliente: form.apellidoCliente.trim(),
@@ -65,7 +65,7 @@ const Registro = () => {
       
       toast.success(res.data.mensaje || "¡Registro exitoso! Inicia sesión.");
       
-      // Limpiamos el formulario
+
       setForm({
         nombreCliente: "",
         apellidoCliente: "",
@@ -74,7 +74,7 @@ const Registro = () => {
         dni: "", 
       });
       
-      // Redirigimos al login después de un breve delay para que el usuario lea el toast
+
       setTimeout(() => {
           navigate("/login");
       }, 1500);

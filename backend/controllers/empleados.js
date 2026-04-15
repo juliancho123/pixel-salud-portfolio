@@ -4,10 +4,9 @@ const bcryptjs = require("bcryptjs");
 
 const query = util.promisify(conection.query).bind(conection);
 
-// controllers/empleados.js
 
 const getEmpleados = (req, res) => {
-  // Quitamos el "WHERE e.activo = true" para que traiga TODOS
+
   const consulta = `
     SELECT e.*, 
            p.crear_productos, 
@@ -56,21 +55,21 @@ const getEmpleado = (req, res)=>{
 }
 
 const createEmpleado = async (req, res) => {
-  // 1. Recibimos 'dniEmpleado' y 'permisos'
+  
   const { nombreEmpleado, apellidoEmpleado, dniEmpleado, emailEmpleado, contraEmpleado, permisos } = req.body;
 
   try {
       let salt = await bcryptjs.genSalt(10);
       let contraEncrip = await bcryptjs.hash(contraEmpleado, salt);
 
-      // Verificar si existe
+      
       const existQuery = "SELECT * FROM Empleados WHERE emailEmpleado = ? OR dniEmpleado = ?";
       
       conection.query(existQuery, [emailEmpleado, dniEmpleado], (err, results) => {
           if (err) return res.status(500).json({ error: "Error al verificar datos" });
           if (results.length > 0) return res.status(409).json({ error: "El email o DNI ya está registrado" });
 
-          // 2. Insertar Empleado (Incluyendo dniEmpleado)
+          
           const insertEmpQuery = "INSERT INTO Empleados (nombreEmpleado, apellidoEmpleado, dniEmpleado, emailEmpleado, contraEmpleado, activo) VALUES (?, ?, ?, ?, ?, 1)";
           
           conection.query(insertEmpQuery, [nombreEmpleado, apellidoEmpleado, dniEmpleado, emailEmpleado, contraEncrip], (err, resultEmp) => {
@@ -81,7 +80,7 @@ const createEmpleado = async (req, res) => {
 
               const idNuevoEmpleado = resultEmp.insertId;
 
-              // 3. Insertar Permisos (Si se enviaron)
+
               if (permisos) {
                   const insertPermisos = `
                       INSERT INTO Permisos (idEmpleado, crear_productos, modificar_productos, modificar_ventasE, ver_ventasTotalesE) 
@@ -115,11 +114,11 @@ const updateEmpleado = async (req, res) => {
   const { nombreEmpleado, apellidoEmpleado, dniEmpleado, emailEmpleado, contraEmpleado, permisos } = req.body;
 
   try {
-    // --- LÓGICA DE SEGURIDAD DE CONTRASEÑA Y DNI ---
+
     let queryEmp = "";
     let paramsEmp = [];
 
-    // Si escribe contraseña nueva
+
     if (contraEmpleado && contraEmpleado.trim().length > 0) {
         const salt = await bcryptjs.genSalt(10);
         const contraEncrip = await bcryptjs.hash(contraEmpleado, salt);
@@ -127,18 +126,18 @@ const updateEmpleado = async (req, res) => {
         queryEmp = "UPDATE Empleados SET nombreEmpleado=?, apellidoEmpleado=?, dniEmpleado=?, emailEmpleado=?, contraEmpleado=? WHERE idEmpleado=?";
         paramsEmp = [nombreEmpleado, apellidoEmpleado, dniEmpleado, emailEmpleado, contraEncrip, id];
     } else {
-        // Si NO escribe contraseña
+
         queryEmp = "UPDATE Empleados SET nombreEmpleado=?, apellidoEmpleado=?, dniEmpleado=?, emailEmpleado=? WHERE idEmpleado=?";
         paramsEmp = [nombreEmpleado, apellidoEmpleado, dniEmpleado, emailEmpleado, id];
     }
-    // -----------------------------------------
 
-    // 1. Ejecutar update de empleado
+
+
     await new Promise((resolve, reject) => {
         conection.query(queryEmp, paramsEmp, (err) => err ? reject(err) : resolve());
     });
 
-    // 2. Actualizar Permisos (Si vienen)
+
     if (permisos) {
         const queryPermisos = `
             UPDATE Permisos SET 

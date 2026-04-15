@@ -36,7 +36,7 @@ const CardCompra = ({ onPurchaseCompleted }) => {
   const [showTransferModal, setShowTransferModal] = useState(false);
   const [showCashModal, setShowCashModal] = useState(false);
 
-  // nuevos estados para entrega
+
   const [showTipoEntrega, setShowTipoEntrega] = useState(false);
   const [showFormularioEnvio, setShowFormularioEnvio] = useState(false);
   const [tempMetodoPago, setTempMetodoPago] = useState(null);
@@ -126,7 +126,7 @@ const CardCompra = ({ onPurchaseCompleted }) => {
     }
   };
 
-  // seleccion tipo entrega
+
   const handleSelectTipoEntrega = (tipo) => {
     setShowTipoEntrega(false);
     if (tipo === "Envio") {
@@ -136,7 +136,7 @@ const CardCompra = ({ onPurchaseCompleted }) => {
     }
   };
 
-  // confirmacion de envio
+
   const handleConfirmEnvio = (direccion) => {
     setShowFormularioEnvio(false);
     procesarCompra(tempMetodoPago, "Envio", direccion);

@@ -17,25 +17,25 @@ const AdminClientes = () => {
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Estados de Filtros
+
   const [busqueda, setBusqueda] = useState("");
   const [filtroEstado, setFiltroEstado] = useState("todos"); // Nuevo filtro
 
-  // --- ESTADOS PARA PAGINACIÓN ---
+
   const [paginaActual, setPaginaActual] = useState(1);
   const itemsPorPagina = 4;
 
   const { user } = useAuthStore();
   const navigate = useNavigate();
 
-  // 1. Protección de Ruta
+
   useEffect(() => {
     if (!user || user.rol !== "admin") {
       navigate("/");
     }
   }, [user, navigate]);
 
-  // 2. Cargar Clientes
+
   const obtenerClientes = async () => {
     setLoading(true);
     try {
@@ -60,12 +60,12 @@ const AdminClientes = () => {
     obtenerClientes();
   }, []);
 
-  // Resetear pagina al buscar o filtrar
+
   useEffect(() => {
     setPaginaActual(1);
   }, [busqueda, filtroEstado]);
 
-  // 3. Crear Cliente
+
   const handleCrearCliente = async () => {
     const { value: formValues } = await Swal.fire({
       title: '<h2 class="text-2xl font-bold text-green-700">👤 Nuevo Cliente</h2>',
@@ -133,7 +133,7 @@ const AdminClientes = () => {
     }
   };
 
-  // 4. Editar Cliente
+
   const handleEditarCliente = async (cli) => {
     const { value: formValues } = await Swal.fire({
       title: `<h2 class="text-xl font-bold text-gray-700">✏️ Editando: ${cli.nombreCliente}</h2>`,
@@ -183,7 +183,7 @@ const AdminClientes = () => {
     }
   };
 
-  // 5. Cambiar Estado
+
   const handleCambiarEstado = (cli) => {
     const esActivo = cli.activo !== 0 && cli.activo !== false;
     const accion = esActivo ? "Dar de Baja" : "Reactivar";
@@ -218,7 +218,7 @@ const AdminClientes = () => {
     });
   };
 
-  // --- Lógica de Filtrado Actualizada ---
+
   const clientesFiltrados = clientes.filter((cli) => {
     const termino = busqueda.toLowerCase();
     const coincideBusqueda =
@@ -227,7 +227,7 @@ const AdminClientes = () => {
       cli.emailCliente.toLowerCase().includes(termino) ||
       (cli.dni && cli.dni.toString().includes(termino));
 
-    // Lógica para estado activo/inactivo
+
     const esActivo = cli.activo !== 0 && cli.activo !== false;
 
     const coincideEstado =
@@ -238,7 +238,7 @@ const AdminClientes = () => {
     return coincideBusqueda && coincideEstado;
   });
 
-  // --- LÓGICA DE PAGINACIÓN ---
+
   const indiceUltimoItem = paginaActual * itemsPorPagina;
   const indicePrimerItem = indiceUltimoItem - itemsPorPagina;
   const itemsActuales = clientesFiltrados.slice(indicePrimerItem, indiceUltimoItem);

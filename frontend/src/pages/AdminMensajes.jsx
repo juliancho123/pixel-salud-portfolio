@@ -3,7 +3,7 @@ import axios from "axios";
 import { FaEnvelopeOpen, FaEnvelope, FaCheck, FaTimes, FaFilter, FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-// Formateador nativo para fechas tipo dd/MM/yyyy HH:mm
+
 function formatFecha(fechaStr) {
   if (!fechaStr) return '-';
   const fecha = new Date(fechaStr);

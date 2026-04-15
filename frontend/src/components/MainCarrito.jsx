@@ -103,14 +103,14 @@ const MainCarrito = ({ breadcrumbsCategoria }) => {
     navigate("/checkout");
   };
 
-  // Función para verificar si hay descuento real
+
   const hasRealDiscount = (product) => {
-    // Verificar si el producto está en oferta Y tiene un porcentaje de descuento mayor a 0
+
     const hasDiscount = product.enOferta && 
                        product.porcentajeDescuento && 
                        product.porcentajeDescuento > 0;
     
-    // También verificar si hay diferencia entre precio regular y precio final
+
     const hasPriceDifference = product.precioRegular && 
                               product.precioFinal && 
                               product.precioFinal < product.precioRegular;
@@ -244,7 +244,7 @@ const MainCarrito = ({ breadcrumbsCategoria }) => {
                     const total = price * product.cantidad;
                     const isHighlighted = highlightChanges[product.idProducto];
                     
-                    // Verificar si realmente tiene descuento
+
                     const showDiscountBadge = hasRealDiscount(product);
 
                     return (

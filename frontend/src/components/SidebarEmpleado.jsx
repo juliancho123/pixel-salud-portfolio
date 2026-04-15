@@ -16,9 +16,9 @@ const SidebarEmpleado = ({ user }) => {
     navigate('/login');
   };
 
-  // --- CORRECCIÓN AQUÍ ---
-  // Antes usábamos .includes(), que confundía "venta" con "misventas".
-  // Ahora dividimos la URL por '/' y buscamos la palabra exacta.
+
+
+
   const isActive = (path) => {
     const segmentos = location.pathname.split('/');
     return segmentos.includes(path);

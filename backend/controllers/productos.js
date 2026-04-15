@@ -378,22 +378,22 @@ const ofertaCyberMonday = (req, res) => {
     const FECHA_FIN = '2026-12-31 23:59:59'; // Ajustado por requerimiento: Oferta hasta el 16 de noviembre.
     const ES_ACTIVA = 1;
 
-    // Los IDs que proporcionaste: 23 productos
+
     const CYBER_MONDAY_IDS = [1, 2, 3, 4, 12, 14, 15, 22, 25, 26, 28, 34, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52];
     
-    // Usaremos los IDs fijos para esta función Cyber Monday
+
     const idsToOffer = CYBER_MONDAY_IDS;
 
     if (!Array.isArray(idsToOffer) || idsToOffer.length === 0) {
         return res.status(400).json({ error: "La lista de IDs de productos para la oferta está vacía." });
     }
 
-    // 1. Preparar los valores para la inserción masiva: [idProducto, descuento, inicio, fin, activa]
+
     const ofertaValues = idsToOffer.map(idProducto => 
         [idProducto, DESCUENTO, FECHA_INICIO, FECHA_FIN, ES_ACTIVA]
     );
 
-    // 2. Consulta de inserción masiva (utiliza el placeholder 'VALUES ?' para arrays)
+
     const insertQuery = `
         INSERT INTO ofertas (idProducto, porcentajeDescuento, fechaInicio, fechaFin, esActiva) 
         VALUES ?

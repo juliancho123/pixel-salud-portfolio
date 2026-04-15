@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-// Configura tu transporte SMTP aquí
+
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
   port: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT) : 465,
@@ -34,8 +34,8 @@ async function enviarConfirmacionCliente(to, nombre, asunto) {
 }
 
 const enviarCorreoRecuperacion = async (to, nombre, token) => {
-  // Ajusta el puerto del frontend si es distinto a 5173
-  // IMPORTANTE: Uso '?token=' porque así lo espera tu frontend en useLocation()
+
+
   const link = `http://localhost:5173/reset-password?token=${token}`; 
 
   const mailOptions = {

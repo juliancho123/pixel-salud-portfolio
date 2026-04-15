@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ShoppingCart, Heart, Zap } from "lucide-react";
 import { useState } from "react";
 
-// Helper para formatear moneda
+
 const formatCurrency = (number) =>
   new Intl.NumberFormat("es-AR", { 
     style: "currency", 
@@ -14,7 +14,7 @@ const ProductOfferCard = ({ product }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  // Calculamos el precio original sumando 21% al precio base
+
   const precioOriginalCalculado = product.precio * 1.21;
   const esOferta = true;
   const porcentajeDescuento = Math.round(((precioOriginalCalculado - product.precio) / precioOriginalCalculado) * 100);
@@ -22,7 +22,7 @@ const ProductOfferCard = ({ product }) => {
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    // Aquí iría la lógica para agregar al carrito
+
     console.log('Agregar al carrito:', product.idProducto);
   };
 

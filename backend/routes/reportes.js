@@ -9,7 +9,7 @@ const {
   reporteProductosVendidos,
 } = require("../controllers/reportes");
 
-// Todas las rutas requieren autenticación y rol de administrador
+
 router.get(
   "/reportes/ventas-online",
   auth,

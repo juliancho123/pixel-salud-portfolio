@@ -11,17 +11,17 @@ const EmpleadoListaVentas = ({ endpoint, title }) => {
   const { user } = useAuthStore();
   const permisos = user?.permisos || {};
 
-  // --- Estados de Datos ---
+
   const [ventas, setVentas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // --- Estados de Paginación y Búsqueda ---
+
   const [busqueda, setBusqueda] = useState('');
   const [paginaActual, setPaginaActual] = useState(1);
   const itemsPorPagina = 10;
 
-  // --- Lógica de Carga ---
+
   const cargarVentas = async () => {
     setLoading(true);
     setError(null);
@@ -56,9 +56,9 @@ const EmpleadoListaVentas = ({ endpoint, title }) => {
   }, [busqueda]);
 
 
-  // =================================================================
-  // --- LÓGICA DE FILTRADO Y PAGINACIÓN ---
-  // =================================================================
+
+
+
   
   const ventasFiltradas = ventas.filter((venta) => {
     const termino = busqueda.toLowerCase();
@@ -87,9 +87,9 @@ const EmpleadoListaVentas = ({ endpoint, title }) => {
   const ventasActuales = ventasFiltradas.slice(indicePrimerItem, indiceUltimoItem);
 
 
-  // =================================================================
-  // --- FUNCIONES DE ACCIÓN ---
-  // =================================================================
+
+
+
 
   const handleAnular = (idVentaE) => {
     Swal.fire({
@@ -199,9 +199,9 @@ const EmpleadoListaVentas = ({ endpoint, title }) => {
   };
 
 
-  // =================================================================
-  // --- RENDERIZADO ---
-  // =================================================================
+
+
+
 
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto w-full animate-fadeIn">
@@ -345,7 +345,7 @@ const EmpleadoListaVentas = ({ endpoint, title }) => {
                         </tr>
                         ))
                     ) : (
-                        // Ajustado colSpan a 10 por la nueva columna
+
                         <tr><td colSpan="10" className="p-8 text-center text-gray-500">No se encontraron ventas.</td></tr>
                     )}
                 </tbody>

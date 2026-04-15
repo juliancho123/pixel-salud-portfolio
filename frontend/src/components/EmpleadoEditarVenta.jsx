@@ -8,7 +8,7 @@ const EmpleadoEditarVenta = () => {
   const navigate = useNavigate();
   const { idVenta } = useParams(); // <--- Capturamos el ID de la URL (definido en App.jsx como :idVenta)
 
-  // --- Estados ---
+
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
   const [resultadosBusqueda, setResultadosBusqueda] = useState([]); 
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
@@ -17,16 +17,16 @@ const EmpleadoEditarVenta = () => {
   const [metodoPago, setMetodoPago] = useState('Efectivo');
   const [total, setTotal] = useState(0);
   
-  // --- Estado de Carga ---
+
   const [loading, setLoading] = useState(true);
 
-  // 1. CALCULAR TOTAL
+
   useEffect(() => {
     const nuevoTotal = carrito.reduce((acc, item) => acc + (item.precioUnitario * item.cantidad), 0);
     setTotal(nuevoTotal);
   }, [carrito]);
 
-  // 2. BUSCAR PRODUCTOS
+
   useEffect(() => {
     if (terminoBusqueda.length < 3) {
       setResultadosBusqueda([]);
@@ -36,9 +36,9 @@ const EmpleadoEditarVenta = () => {
     return () => clearTimeout(timer);
   }, [terminoBusqueda]);
 
-  // =======================================================
-  // --- CARGAR DATOS DE LA VENTA (Usando idVenta de la URL) ---
-  // =======================================================
+
+
+
   useEffect(() => {
     if (!idVenta) return; 
     
@@ -52,17 +52,17 @@ const EmpleadoEditarVenta = () => {
           apiClient.get(`/ventasEmpleados/detalle/${idVenta}`) 
         ]);
 
-        // 1. Seteamos datos cabecera
+
         setMetodoPago(cabeceraRes.data.metodoPago);
 
-        // 2. Seteamos carrito
+
         setCarrito(detalleRes.data.map(prod => ({
           idProducto: prod.idProducto,
           nombreProducto: prod.nombreProducto,
           precioUnitario: prod.precioUnitario,
           cantidad: prod.cantidad,
-          // Si tu backend guarda info de receta en el detalle, asignala acá. 
-          // Si no, asumimos null o false por defecto al editar.
+
+
           recetaFisica: prod.recetaFisica || null 
         })));
         
@@ -80,7 +80,7 @@ const EmpleadoEditarVenta = () => {
     cargarDatosVenta();
   }, [idVenta, navigate]); // Dependencias actualizadas
 
-  // --- FUNCIONES ---
+
 
   const buscarProductos = async (term) => {
     try {
@@ -131,9 +131,9 @@ const EmpleadoEditarVenta = () => {
      setCarrito(carrito.filter((_, i) => i !== index));
   };
 
-  // =======================================================
-  // --- GUARDAR CAMBIOS ---
-  // =======================================================
+
+
+
   const handleGuardarCambios = async () => {
       if (carrito.length === 0) {
         Swal.fire('Ticket vacío', 'No puedes dejar una venta sin productos.', 'info');
@@ -160,7 +160,7 @@ const EmpleadoEditarVenta = () => {
             `La venta #${idVenta} se modificó con éxito.`,
             'success'
           ).then(() => {
-             // Volver a la lista de ventas tras guardar
+
              navigate('/panelempleados/misventas'); 
           });
           
@@ -175,7 +175,7 @@ const EmpleadoEditarVenta = () => {
   };
 
 
-  // --- RENDERIZADO ---
+
   
   if (loading) {
     return <div className="flex justify-center items-center h-screen"></div>;

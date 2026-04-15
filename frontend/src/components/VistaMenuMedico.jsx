@@ -8,7 +8,7 @@ const VistaMenuMedico = () => {
   const { user } = useAuthStore(); // <--- Obtenemos datos aquí
 
   return (
-    // Quitamos 'animate-fadeIn' para asegurar visibilidad
+
     <div className="flex flex-col items-center justify-start min-h-full bg-blue-50/30 p-6 pt-24">
       
       <h1 className="text-5xl font-extrabold text-gray-800 text-center tracking-tight">
