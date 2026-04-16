@@ -19,8 +19,9 @@ const BuscarRecetaButton = ({ onRecetaEncontrada }) => {
     try {
       const dniCliente = user.dni;
       console.log("[FRONTEND] Buscando recetas con dniCliente:", dniCliente);
+      // Cambio a variable de entorno
       const res = await axios.get(
-        `http://localhost:5000/recetas/cliente/${dniCliente}`,
+        `${import.meta.env.VITE_API_URL}/recetas/cliente/${dniCliente}`,
         { headers: { Auth: `Bearer ${token}` } }
       );
       if (res.data && res.data.length > 0) {

@@ -2,7 +2,7 @@ import { create } from "zustand";
 import axios from "axios";
 import { useProductStore } from "./useProductStore";
 
-const API_URL = "http://localhost:5000/productos";
+const API_URL = `${import.meta.env.VITE_API_URL}/productos`;
 
 
 const cleanAndParsePrice = (price) => {

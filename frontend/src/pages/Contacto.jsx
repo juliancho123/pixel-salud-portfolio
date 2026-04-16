@@ -73,7 +73,8 @@ const Contacto = () => {
 
     setIsSubmitting(true);
     try {
-      await axios.post("http://localhost:5000/mensajes/crear", {
+      // Cambio a variable de entorno
+      await axios.post(`${import.meta.env.VITE_API_URL}/mensajes/crear`, {
         idCliente: user.id,
         nombre: formData.nombre,
         email: formData.email,
@@ -356,7 +357,7 @@ const Contacto = () => {
           <div className="bg-white rounded-xl shadow-lg p-6 w-80 text-center relative">
             <button
               onClick={() => setShowModal(false)}
-              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100"
+              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100 cursor-pointer"
               aria-label="Cerrar modal"
             >
               <FaTimes />

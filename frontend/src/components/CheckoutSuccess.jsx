@@ -8,14 +8,11 @@ const CheckoutSuccess = () => {
     const navigate = useNavigate(); 
     const [searchParams] = useSearchParams();
     const vaciarCarritoLocal = useCarritoStore(state => state.vaciarCarrito);
-    const { token } = useAuthStore(); // 👈 OBTENER TOKEN
+    const { token } = useAuthStore();
     const [countdown, setCountdown] = useState(3);
 
-
-    const LOCAL_SUCCESS_URL = 'http://localhost:5173/perfil/mis-compras';
-
-
-
+    // CORRECCIÓN CLAVE: Usar ruta relativa para que funcione en Vercel y Localhost
+    const SUCCESS_URL = '/perfil/mis-compras';
 
     const clearCartInDB = useCallback(async () => {
         if (!token) {
@@ -24,7 +21,6 @@ const CheckoutSuccess = () => {
         }
 
         try {
-
             const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
             const urlApiCompleta = `${backendUrl}/mercadopago/clearUserCart`; 
 
@@ -32,7 +28,7 @@ const CheckoutSuccess = () => {
                 method: "DELETE", 
                 headers: {
                     "Content-Type": "application/json",
-                    auth: `Bearer ${token}`, // Envía el token para autenticar
+                    auth: `Bearer ${token}`, 
                 },
             });
 
@@ -41,26 +37,20 @@ const CheckoutSuccess = () => {
             } else {
                 const errorData = await response.json();
                 console.error('❌ Error al limpiar carrito en DB:', errorData.message);
-
             }
         } catch (error) {
             console.error('❌ Error de conexión al limpiar carrito:', error);
         }
     }, [token]);
 
-
     useEffect(() => {
         const status = searchParams.get('status');
         
-
         vaciarCarritoLocal();
 
-
         if (status === 'approved' && token) {
-
              clearCartInDB();
         }
-
 
         let currentCount = 3;
         const timer = setInterval(() => {
@@ -69,15 +59,13 @@ const CheckoutSuccess = () => {
             
             if (currentCount <= 0) {
                 clearInterval(timer);
-                
-
-
-                window.location.replace(LOCAL_SUCCESS_URL); 
+                // Cambio window.location.replace por navigate de react-router
+                navigate(SUCCESS_URL, { replace: true }); 
             }
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [searchParams, vaciarCarritoLocal, token, clearCartInDB]); 
+    }, [searchParams, vaciarCarritoLocal, token, clearCartInDB, navigate]); 
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -103,17 +91,16 @@ const CheckoutSuccess = () => {
                 <div className="flex items-center justify-center gap-2 text-gray-600">
                     <FiLoader className="animate-spin" />
                     <p className="text-sm">
-                        Redirigiendo a tus compras locales en <span className="font-bold text-primary-600">{countdown}</span> segundos...
+                        Redirigiendo a tus compras en <span className="font-bold text-primary-600">{countdown}</span> segundos...
                     </p>
                 </div>
 
-                {/* Botón manual - AHORA REDIRIGE A LOCALHOST */}
+                {/* Botón manual */}
                 <button
-
-                    onClick={() => window.location.replace(LOCAL_SUCCESS_URL)} 
-                    className="mt-6 w-full bg-primary-600 text-white py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
+                    onClick={() => navigate(SUCCESS_URL, { replace: true })} 
+                    className="mt-6 w-full bg-primary-600 text-white py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors cursor-pointer"
                 >
-                    Ver mis compras (Local) ahora
+                    Ver mis compras ahora
                 </button>
             </div>
         </div>

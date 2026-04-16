@@ -39,7 +39,8 @@ const AdminOfertas = () => {
     setCargando(true);
     try {
       await fetchProducts();
-      const response = await axios.get("http://localhost:5000/ofertas");
+      // Cambio a variable de entorno
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/ofertas`);
       setOfertas(response.data);
     } catch (error) {
       console.error("Error al cargar ofertas:", error);
@@ -96,7 +97,8 @@ const AdminOfertas = () => {
         toast.error("Complete los datos obligatorios");
         return;
       }
-      await axios.post("http://localhost:5000/ofertas/crear", nuevaOferta, getConfig());
+      // Cambio a variable de entorno
+      await axios.post(`${import.meta.env.VITE_API_URL}/ofertas/crear`, nuevaOferta, getConfig());
       setModalAbierto(false);
       setNuevaOferta({ idProducto: "", porcentajeDescuento: "", fechaInicio: "", fechaFin: "" });
       fetchOfertas();
@@ -157,8 +159,9 @@ const AdminOfertas = () => {
 
     if (formValues) {
       try {
+        // Cambio a variable de entorno
         await axios.put(
-          `http://localhost:5000/ofertas/actualizar/${oferta.idOferta}`,
+          `${import.meta.env.VITE_API_URL}/ofertas/actualizar/${oferta.idOferta}`,
           formValues,
           getConfig()
         );
@@ -187,7 +190,8 @@ const AdminOfertas = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.put(`http://localhost:5000/ofertas/esActiva/${idOferta}`, {
+          // Cambio a variable de entorno
+          await axios.put(`${import.meta.env.VITE_API_URL}/ofertas/esActiva/${idOferta}`, {
             esActiva: !esActiva,
           }, getConfig());
 
@@ -380,7 +384,6 @@ const AdminOfertas = () => {
                       <td className="px-3 py-3 whitespace-nowrap text-right align-middle">
                         <div className="flex gap-1 justify-end">
 
-                          {/* BOTÓN EDITAR (Icono solo) */}
                           {/* BOTÓN EDITAR (Texto) */}
                           <button
                             onClick={() => handleEditarOferta(oferta)}

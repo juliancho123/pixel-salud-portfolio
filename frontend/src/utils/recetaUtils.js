@@ -3,7 +3,7 @@ import axios from "axios";
 export async function marcarRecetaUsada(idReceta, token) {
   try {
     await axios.put(
-      `http://localhost:5000/recetas/usada/${idReceta}`,
+      `${import.meta.env.VITE_API_URL}/recetas/usada/${idReceta}`,
       {},
       { headers: { Auth: `Bearer ${token}` } }
     );

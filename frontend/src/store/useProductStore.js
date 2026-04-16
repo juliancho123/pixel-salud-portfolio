@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const API_URL_ALL = "http://localhost:5000/productos"; 
-const API_URL_CYBER_MONDAY = "http://localhost:5000/productos/ofertas/cyber-monday";
+const API_URL_ALL = `${import.meta.env.VITE_API_URL}/productos`; 
+const API_URL_CYBER_MONDAY = `${import.meta.env.VITE_API_URL}/productos/ofertas/cyber-monday`;
 
 const PRODUCTS_PER_SECTION = 6;
 

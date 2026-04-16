@@ -90,9 +90,7 @@ const AdminProductos = () => {
                 </div>
                 <div>
                     <label class="text-xs font-bold text-gray-500 uppercase">Categoría</label>
-                    <select id="swal-categoria" class="w-full p-2.5 border rounded">
-                        ${opcionesCategorias}
-                    </select>
+                    <input id="swal-categoria" class="w-full p-2.5 border rounded" value="${prod.categoria}">
                 </div>
             </div>
             
@@ -136,8 +134,9 @@ const AdminProductos = () => {
 
     if (formValues) {
       try {
+        // Cambio a variable de entorno
         await axios.put(
-          `http://localhost:5000/productos/actualizar/${prod.idProducto}`,
+          `${import.meta.env.VITE_API_URL}/productos/actualizar/${prod.idProducto}`,
           {
             ...formValues,
             precio: Number(formValues.precio),
@@ -163,7 +162,8 @@ const AdminProductos = () => {
         precio: Number(nuevoProducto.precio) || 0
       };
 
-      await axios.post("http://localhost:5000/productos/crear", productoAEnviar, getConfig());
+      // Cambio a variable de entorno
+      await axios.post(`${import.meta.env.VITE_API_URL}/productos/crear`, productoAEnviar, getConfig());
       toast.success("Producto agregado correctamente");
       setIsModalOpen(false);
       setNuevoProducto({
@@ -194,7 +194,8 @@ const AdminProductos = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.put(`http://localhost:5000/productos/actualizar/activo/${prod.idProducto}`, {
+          // Cambio a variable de entorno
+          await axios.put(`${import.meta.env.VITE_API_URL}/productos/actualizar/activo/${prod.idProducto}`, {
             activo: !prod.activo,
           }, getConfig());
 
@@ -419,7 +420,7 @@ const AdminProductos = () => {
                       <td className="px-3 py-3 whitespace-nowrap text-right align-middle">
                         <div className="flex gap-1 justify-end">
 
-                          {/* BOTÓN EDITAR (Icono solo) */}
+                          {/* BOTÓN EDITAR (Texto) */}
                           <button
                             onClick={() => handleEditarProducto(prod)}
                             className="px-2 py-1 text-sm font-medium bg-yellow-500 hover:bg-yellow-600 text-white rounded-md transition-colors cursor-pointer"
@@ -428,10 +429,10 @@ const AdminProductos = () => {
                             Editar
                           </button>
 
-                          {/* BOTÓN TOGGLE (Icono solo) */}
+                          {/* BOTÓN TOGGLE (Texto) */}
                           <button
                             onClick={() => handleToggleActiva(prod)}
-                            className={`px-2 text-white rounded-md transition-colors cursor-pointer ${prod.activo ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"
+                            className={`px-2 py-1 text-sm font-medium text-white rounded-md transition-colors cursor-pointer ${prod.activo ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"
                               }`}
                             title={prod.activo ? "Desactivar Producto" : "Activar Producto"}
                           >

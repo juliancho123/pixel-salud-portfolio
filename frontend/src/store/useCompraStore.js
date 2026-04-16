@@ -34,7 +34,7 @@ export const useCompraStore = create(() => ({
         ],
       };
 
-      await axios.post("http://localhost:5000/ventaOnline/crear", compra);
+      await axios.post(`${import.meta.env.VITE_API_URL}/ventaOnline/crear`, compra);
 
       Swal.fire({
         icon: "success",
@@ -91,7 +91,7 @@ export const useCompraStore = create(() => ({
         direccionEnvio: tipoEntrega === "Envio" ? direccionEnvio : null
       };
 
-      await axios.post("http://localhost:5000/ventaOnline/crear", compra);
+      await axios.post(`${import.meta.env.VITE_API_URL}/ventaOnline/crear`, compra);
 
 
       const { token } = useAuthStore.getState();
@@ -101,7 +101,7 @@ export const useCompraStore = create(() => ({
         }
       }
 
-      await axios.delete(`http://localhost:5000/carrito/vaciar/${idCliente}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/carrito/vaciar/${idCliente}`);
       useCarritoStore.getState().vaciarCarrito?.();
 
       Swal.fire({

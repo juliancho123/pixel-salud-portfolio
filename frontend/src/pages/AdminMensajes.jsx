@@ -33,7 +33,7 @@ const AdminMensajes = () => {
   const fetchMensajes = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:5000/mensajes");
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/mensajes`);
       setMensajes(res.data);
     } catch {
       setMensajes([]);
@@ -42,12 +42,12 @@ const AdminMensajes = () => {
   };
 
   const marcarLeido = async (idMensaje) => {
-    await axios.patch(`http://localhost:5000/mensajes/${idMensaje}/leido`);
+    await axios.patch(`${import.meta.env.VITE_API_URL}/mensajes/${idMensaje}/leido`);
     fetchMensajes();
   };
 
   const cambiarEstado = async (idMensaje, nuevoEstado) => {
-    await axios.patch(`http://localhost:5000/mensajes/${idMensaje}/estado`, { estado: nuevoEstado });
+    await axios.patch(`${import.meta.env.VITE_API_URL}/mensajes/${idMensaje}/estado`, { estado: nuevoEstado });
     fetchMensajes();
   };
 
@@ -137,18 +137,18 @@ const AdminMensajes = () => {
                     <td className="px-4 py-2">{formatFecha(m.fechaEnvio)}</td>
                     <td className="px-4 py-2 flex gap-2 items-center">
                       <button
-                        className="text-xs px-2 py-1 rounded bg-primary-600 text-white hover:bg-primary-700"
+                        className="text-xs px-2 py-1 rounded bg-primary-600 text-white hover:bg-primary-700 cursor-pointer"
                         onClick={() => setMensajeSeleccionado(m)}
                       >Ver</button>
                       {!m.leido && (
                         <button
-                          className="text-xs px-2 py-1 rounded bg-green-500 text-white hover:bg-green-600"
+                          className="text-xs px-2 py-1 rounded bg-green-500 text-white hover:bg-green-600 cursor-pointer"
                           onClick={() => marcarLeido(m.idMensaje)}
                         >Marcar leído</button>
                       )}
                       {m.estado !== 'cerrado' && (
                         <button
-                          className="text-xs px-2 py-1 rounded bg-gray-300 text-gray-700 hover:bg-gray-400"
+                          className="text-xs px-2 py-1 rounded bg-gray-300 text-gray-700 hover:bg-gray-400 cursor-pointer"
                           onClick={() => cambiarEstado(m.idMensaje, 'cerrado')}
                         >Cerrar</button>
                       )}
@@ -165,7 +165,7 @@ const AdminMensajes = () => {
           <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
             <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-lg relative">
               <button
-                className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-2xl"
+                className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-2xl cursor-pointer"
                 onClick={() => setMensajeSeleccionado(null)}
                 aria-label="Cerrar"
               >
@@ -183,18 +183,18 @@ const AdminMensajes = () => {
               <div className="flex gap-3 justify-end mt-4">
                 {!mensajeSeleccionado.leido && (
                   <button
-                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 cursor-pointer"
                     onClick={() => { marcarLeido(mensajeSeleccionado.idMensaje); setMensajeSeleccionado(null); }}
                   >Marcar como leído</button>
                 )}
                 {mensajeSeleccionado.estado !== 'cerrado' && (
                   <button
-                    className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+                    className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 cursor-pointer"
                     onClick={() => { cambiarEstado(mensajeSeleccionado.idMensaje, 'cerrado'); setMensajeSeleccionado(null); }}
                   >Cerrar mensaje</button>
                 )}
                 <button
-                  className="bg-primary-600 text-white px-4 py-2 rounded hover:bg-primary-700"
+                  className="bg-primary-600 text-white px-4 py-2 rounded hover:bg-primary-700 cursor-pointer"
                   onClick={() => setMensajeSeleccionado(null)}
                 >Cerrar ventana</button>
               </div>

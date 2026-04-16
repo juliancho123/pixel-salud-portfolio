@@ -10,8 +10,6 @@ const RecuperarContrasena = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
-
-
   const primaryColor = "bg-green-600";
   const primaryHover = "hover:bg-green-700";
 
@@ -19,9 +17,8 @@ const RecuperarContrasena = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-
-
-      await axios.post("http://localhost:5000/clientes/olvide-password", { email });
+      // Cambio a variable de entorno
+      await axios.post(`${import.meta.env.VITE_API_URL}/clientes/olvide-password`, { email });
       toast.success("¡Correo enviado! Revisa tu bandeja de entrada.");
       setTimeout(() => {
         navigate("/");

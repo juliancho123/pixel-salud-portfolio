@@ -31,9 +31,8 @@ const RestablecerContrasena = () => {
     setIsSubmitting(true);
     try {
 
-
-      await axios.post(`http://localhost:5000/clientes/restablecer-password/${token}`, {
-    nuevaPassword: password, // Asegurate que la variable se llame igual que en el controller
+      await axios.post(`${import.meta.env.VITE_API_URL}/clientes/restablecer-password/${token}`, {
+    nuevaPassword: password, 
   });
 
       toast.success("¡Contraseña restablecida con éxito!");
